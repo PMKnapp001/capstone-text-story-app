@@ -5,7 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 
-class User(db.model):
+class User(db.Model):
     """User class."""
     
     __tablename__ = "users"
@@ -27,7 +27,7 @@ class User(db.model):
         return f"<User user_id={self.user_id} username={self.username} email={self.email}>"
 
 
-class Story(db.model):
+class Story(db.Model):
     """Story class."""
     
     __tablename__ = "stories"
@@ -52,7 +52,7 @@ class Story(db.model):
         return f"<Story story_id={self.story_id} title={self.title}>"
 
 
-class Branch(db.model):
+class Branch(db.Model):
     """Branch class."""
     
     __tablename__ = "branches"
@@ -60,11 +60,12 @@ class Branch(db.model):
     # SQLAlchemy instructions to create table
     branch_id = db.Column(db.Integer, autoincrement= True, primary_key= True)
     story_id = db.Column(db.Integer, db.ForeignKey('stories.story_id'), nullable = False)
-    prev_branch_id = db.Column(db.Integer, db.ForeignKey('branches.branch_id'), nullable = False)
+    prev_branch_id = db.Column(db.Integer, db.ForeignKey('branches.branch_id'), nullable = False, default = 0)
     description = db.Column(db.Text, nullable = False)
     body = db.Column(db.Text, nullable = False)
     branch_prompt = db.Column(db.Text)
     is_end = db.Column(db.Boolean, nullable = False, default = False)
+    ordinal = db.Column(db.Integer, nullable = False, default = 0)
 
     # Relationships for primary keys and foreign keys
     story = db.relationship("Story", back_populates="branches")
@@ -79,7 +80,7 @@ class Branch(db.model):
         return f"<Branch branch_id={self.branch_id} prev_branch_id={self.prev_branch_id} story_id={self.story_id}>"
 
 
-class Rating(db.model):
+class Rating(db.Model):
     """Rating class."""
     
     __tablename__ = "ratings"
