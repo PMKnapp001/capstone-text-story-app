@@ -37,11 +37,15 @@ class Story(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable = False)
     synopsis = db.Column(db.Text, nullable = False)
     title = db.Column(db.Text, nullable = False)
-    first_branch_id = db.Column(db.Integer, db.ForeignKey('branches.branch_id'), nullable = False)
+    # first_branch_id = db.Column(db.Integer, db.ForeignKey('branches.branch_id'), nullable = False)
+    first_branch_id = db.Column(db.Integer)
+
+    # Mapped Column
+
 
     # Relationships for primary keys and foreign keys
     user = db.relationship("User", back_populates="stories")
-    first_branch = db.relationship("Branch", back_populates="story_intro")
+    # first_branch = db.relationship("Branch", back_populates="story_intro", foreign_keys=[first_branch_id])
     branches = db.relationship("Branch", back_populates="story")
     ratings = db.relationship("Rating", back_populates="story")
     
@@ -60,7 +64,8 @@ class Branch(db.Model):
     # SQLAlchemy instructions to create table
     branch_id = db.Column(db.Integer, autoincrement= True, primary_key= True)
     story_id = db.Column(db.Integer, db.ForeignKey('stories.story_id'), nullable = False)
-    prev_branch_id = db.Column(db.Integer, db.ForeignKey('branches.branch_id'), nullable = False, default = 0)
+    # prev_branch_id = db.Column(db.Integer, db.ForeignKey('branches.branch_id'), nullable = False, default = 0)
+    prev_branch_id = db.Column(db.Integer)
     description = db.Column(db.Text, nullable = False)
     body = db.Column(db.Text, nullable = False)
     branch_prompt = db.Column(db.Text)
@@ -69,9 +74,9 @@ class Branch(db.Model):
 
     # Relationships for primary keys and foreign keys
     story = db.relationship("Story", back_populates="branches")
-    prev_branch = db.relationship("Branch", back_populates="branch_options")
-    branch_options = db.relationship("Branch", back_populates="prev_branch")
-    story_intro = db.relationship("Story", back_populates="first_branch")
+    # prev_branch = db.relationship("Branch", back_populates="branch_options")
+    # branch_options = db.relationship("Branch", back_populates="prev_branch")
+    # story_intro = db.relationship("Story", back_populates="first_branch")
 
 
     def __repr__(self):

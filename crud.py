@@ -11,10 +11,10 @@ def create_user(username, password, email):
     return user
 
 
-def create_story(user_id, synopsis, title, first_branch_id):
+def create_story(user_id, synopsis, title):
     """Creates a story."""
 
-    story = Story(user_id=user_id, synopsis=synopsis, title=title, first_branch_id=first_branch_id)
+    story = Story(user_id=user_id, synopsis=synopsis, title=title)
 
     return story
 
