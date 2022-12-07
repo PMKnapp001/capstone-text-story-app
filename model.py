@@ -50,10 +50,18 @@ class Story(db.Model):
     ratings = db.relationship("Rating", back_populates="story")
     
     
+    # story methods
     def __repr__(self):
         """Displays info from story class."""
         
         return f"<Story story_id={self.story_id} title={self.title}>"
+
+    def get_intro_branch(self):
+        """Return branch that serves as intro for story."""
+
+        return Branch.query.filter(Branch.branch_id == self.first_branch_id).first()
+
+
 
 
 class Branch(db.Model):
@@ -83,6 +91,12 @@ class Branch(db.Model):
         """Displays info from branch class."""
         
         return f"<Branch branch_id={self.branch_id} prev_branch_id={self.prev_branch_id} story_id={self.story_id}>"
+
+
+    def get_next_branches(self):
+        """Returns all sub branches for current branch."""
+
+        return Branch.query.filter(Branch.prev_branch_id == self.branch_id).order_by(Branch.ordinal).all()
 
 
 class Rating(db.Model):

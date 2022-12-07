@@ -61,6 +61,33 @@ def get_story_by_id(story_id):
         return None
 
 
+def get_branch_by_id(branch_id):
+    """"Gets a branch by id"""
+
+    branch = Branch.query.get(branch_id)
+
+    if branch:
+        return branch
+    
+    else:
+        return None
+
+
+def get_all_branches_from_story_id(story_id):
+
+    all_branches = Branch.query.filter(Branch.story_id==story_id).all()
+
+    return all_branches
+
+
+def get_all_branches_for_prompt(prev_branch_id):
+    """"Gets sub branches for previous branch."""
+    
+    all_sub_branches = Branch.query.filter(Branch.prev_branch_id == prev_branch_id).all()
+
+    return all_sub_branches
+
+
 def get_all_users():
     """"Gets all users as list."""
 

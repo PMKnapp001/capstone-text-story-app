@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Test Story Example{% endblock %}
+
+{% block body %}
+<h1>{{ story.title }}</h1>
+
+<p>
+  Synopsis: {{ story.synopsis }}
+</p>
+
+<p>
+    Intro: {{ intro.body }}
+</p>
+
+<p>
+    Prompt: {{ intro.branch_prompt }}
+</p>
+
+
+<div id="buttons-div">
+    Options:
+    {% for branch in all_branches[1:] %}
+    <ul class="branch-prev" id="{{ branch.prev_branch_id }}">
+        
+        <li><button value="{{ branch.branch_id }}" class="branch-choice">{{ branch.description }}</a></li>
+        
+    </ul>
+    {% endfor %}
+</div>
+
+
+{% endblock %}
