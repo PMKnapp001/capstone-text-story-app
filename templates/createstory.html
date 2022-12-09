@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}Test Story App Create Story{% endblock %}
+
+{% block body %}
+{% if not session['story_id'] %}
+<div id="story-form">
+  <form action="/add-story" method="POST">
+    <label for="title">Story Title:</label>
+    <input type="text" name="title" id="title">
+
+    <label for="synopsis">Story Synopsis:</label>
+    <textarea name="synopsis" id="synopsis"></textarea>
+    <input type="submit" id="story-submit" value="Submit!">
+  </form>
+</div>
+{% endif %}
+
+{% if session['story_id'] %}
+    <h1 id="debug-id">Story ID: {{ session['story_id'] }}</h1>
+    <h1 id="title">Title: {{ session['title'] }}</h1>
+    <div id="synopsis">Synopsis: {{ session['synopsis'] }}</div>
+        <div id="intro-form">
+            <form action="/add-intro" method="POST">
+                <!-- <label for="description">Enter a brief description of your intro(one sentence): </label>
+                <textarea name="description" id="description"></textarea> -->
+
+                <label for="body">Intro body: </label>
+                <textarea name="body" id="body"></textarea>
+
+                <label for="prompt">Enter the prompt for the next choice(if any): </label>
+                <textarea name="prompt" id="prompt" value="abc"></textarea>
+
+                <label for="is-end">Does the story stop here?</label>
+                <input type="radio" name="is-end" value="false" id="no">
+                <label for="no">No</label>
+
+                <input type="radio" name="is-end" value="true" id="yes">
+                <label for="yes">Yes</label>
+                <input type="submit" id="intro-submit" value="Submit!">
+            </form>
+        </div>
+{% endif %}
+{% endblock %}
