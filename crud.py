@@ -154,6 +154,15 @@ def get_ratings_for_story(story_id):
         return None    
 
 
+def get_ordinal_for_next_branch(branch_id = 0):
+    """Returns an ordinal value to be used when creating a branch."""
+
+    all_sub_branches = Branch.query.filter(Branch.prev_branch_id == branch_id).all()
+    ordinal = 1
+    for branch in all_sub_branches:
+        ordinal +=1
+    return ordinal
+
 
 
 

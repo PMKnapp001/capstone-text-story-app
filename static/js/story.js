@@ -20,9 +20,9 @@ for (const button of choiceButtons) {
         evt.preventDefault();
 
         turnButtonsOff(button.value);
-        const nextBranchId = button.value;
+        const clickedBranchId = button.value;
 
-        fetch(`/api/branch?branch_id=${nextBranchId}`)
+        fetch(`/api/branch?branch_id=${clickedBranchId}`)
             .then((response) => response.json())
             .then((responseData) => {
                 let buttonContainer = document.querySelector('#buttons-div');

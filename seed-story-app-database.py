@@ -24,7 +24,7 @@ def create_branches(story, prev_branch, path_level):
         test_desc = f"Path {path_level}-{i}"
         test_branch_prompt = f"({path_level}-{i})Choose the next branch: "
         is_end = False
-        ordinal = i
+        ordinal = crud.get_ordinal_for_next_branch(prev_branch.branch_id)
 
         test_branch = crud.create_branch(story_id=story.story_id, 
                                             prev_branch_id = prev_branch.branch_id, 
@@ -61,7 +61,7 @@ test_intro_body = new_soldiers
 test_intro_desc = "Intro Branch"
 test_branch_prompt = "Choose the next branch: "
 is_end = False
-ordinal = 0
+ordinal = crud.get_ordinal_for_next_branch()
 
 test_intro_branch = crud.create_branch(story_id=test_story.story_id, 
                                     prev_branch_id = None, 

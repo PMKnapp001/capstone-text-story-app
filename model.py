@@ -78,7 +78,7 @@ class Branch(db.Model):
     body = db.Column(db.Text, nullable = False)
     branch_prompt = db.Column(db.Text)
     is_end = db.Column(db.Boolean, nullable = False, default = False)
-    ordinal = db.Column(db.Integer, nullable = False, default = 0)
+    ordinal = db.Column(db.Integer, nullable = False, default = 1)
 
     # Relationships for primary keys and foreign keys
     story = db.relationship("Story", back_populates="branches")
