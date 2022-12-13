@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Story App Account Page{% endblock %}
+
+{% block body %}
+<div>
+    <button class="account-buttons" id="create">Create an Account</button>
+    <button class="account-buttons" id="login">Login to Account</button>
+</div>
+
+<div id="create-account" class="account-div" style="display: none">
+    <h3>Create an Account</h3>
+    <form action="/users/new" method="POST">
+        <label for="username">Username: </label>
+        <input type="text" name="username" id="username">
+
+        <label for="email">Email: </label>
+        <input type="text" name="email" id="email">
+
+        <label for="password">Password: </label>
+        <input type="password" name="password" id="password">
+        
+        <input type="submit" id="account-create" value="Create Account">
+    </form>
+</div>
+
+<div id="login-account" class="account-div" style="display: none">
+    <h3>Account Login</h3>
+    <form action="/users/login" method="POST">
+        <label for="username">Username: </label>
+        <input type="text" name="username" id="username">
+
+        <label for="password">Password: </label>
+        <input type="password" name="password" id="password">
+        
+        <input type="submit" id="account-login" value="Login">
+    </form>
+</div>
+<script src="/static/js/account.js"></script>
+{% endblock %}

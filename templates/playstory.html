@@ -1,25 +1,30 @@
 {% extends 'base.html' %}
-{% block title %}Test Story Example{% endblock %}
+{% block title %}Play Story{% endblock %}
 
 {% block body %}
+<form action="/user/{{ session['user_id'] }}/stories">
+    <input type="submit" value="Go To Stories">
+</form>
 <h1>{{ story.title }}</h1>
-
-<p>
+<h2>By {{ user.username }}
+<button id="ghost-button-branch-id" value="{{ intro.branch_id }}" style="display: none"></button>
+<h3>
   Synopsis: {{ story.synopsis }}
-</p>
+</h3>
 
-<p>
+<div id="intro-branch">
     Intro: {{ intro.body }}
-</p>
+</div>
 
-<p>
+<div>
     Prompt: {{ intro.branch_prompt }}
-</p>
+</div>
 
 
-<div id="buttons-div">
+<div id="buttons-div" >
     Options:
     {% for branch in all_branches[1:] %}
+    {# {% for branch in all_branches %} #}
     <ul class="branch-prev" id="{{ branch.prev_branch_id }}">
         
         <li><button value="{{ branch.branch_id }}" class="branch-choice">{{ branch.description }}</a></li>

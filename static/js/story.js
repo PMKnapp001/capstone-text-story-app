@@ -11,9 +11,12 @@ function turnButtonsOff(previousButtonId) {
     } 
 }
 
-
+const introBranchId = document.querySelector('#ghost-button-branch-id').value;
+console.log("intro Branch id =>");
+console.log(introBranchId);
 const choiceButtons = document.querySelectorAll('.branch-choice');
-turnButtonsOff("8");
+
+turnButtonsOff(introBranchId);
 
 for (const button of choiceButtons) {
     button.addEventListener('click', (evt) => {

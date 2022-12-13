@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Story App Add Branch{% endblock %}
+
+{% block body %}
+<form action="/user/{{ session['user_id'] }}/stories">
+    <input type="submit" value="Go To Stories">
+</form>
+<div id="branches-div">
+    Branches for Story ID: {{ story.story_id }} 
+
+    {% for branch in story.branches %}
+    <li><a href="/stories/{{ story.story_id }}/branches/{{ branch.branch_id }}/updateid" id="branch-{{ branch.branch_id }}" class="branch-link">{{ branch.description }}</a></li>
+    {% endfor %}    
+</div>
+
+{% endblock %}

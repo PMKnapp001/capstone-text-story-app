@@ -10,7 +10,11 @@ app.jinja_env.undefined = StrictUndefined
 @app.route('/')
 def homepage():
 
-    return render_template('homepage.html')
+    if not session.get('user_id'):
+
+        return redirect('/users')
+    else:    
+        return render_template('homepage.html')
 
 
 @app.route('/users')
@@ -75,17 +79,39 @@ def login_user():
         return redirect("/users")
    
 
+@app.route('/user/logout')
+def user_logout():
 
-@app.route('/test-play-story')
-def test_story():
+    session['user_id'] = ""
 
-    story = crud.get_story_by_id(2)
+    return redirect('/')
+
+
+@app.route('/user/<user_id>/stories')
+def all_stories(user_id):
+
+    user = crud.get_user_by_id(user_id)
+    stories = user.stories
+
+    
+
+    return render_template('showstories.html', user=user, stories=stories)
+
+
+@app.route('/user/<user_id>/stories/<story_id>')
+def view_story(user_id, story_id):
+     
+    user = crud.get_user_by_id(user_id)
+
+    story = crud.get_story_by_id(story_id)
 
     intro = story.get_intro_branch()
 
     all_branches = story.branches
 
-    return render_template('test.html', story=story, intro=intro, all_branches=all_branches)
+
+    return render_template('playstory.html', user=user,story=story,intro=intro,all_branches=all_branches)
+
 
 
 @app.route('/api/branch')
@@ -118,8 +144,7 @@ def add_story():
 
     title = request.form.get('title')
     synopsis = request.form.get('synopsis')
-    user_id = 1 # TODO: set to 1 for testing, use form.get when implemented
-
+    user_id = session['user_id']
     new_story = crud.create_story(user_id=user_id, synopsis=synopsis, title=title)
 
     db.session.add(new_story)
@@ -233,7 +258,7 @@ def show_branches(story_id):
     story = crud.get_story_by_id(story_id)
 
 
-    return render_template('showstory.html', story=story)
+    return render_template('showbranches.html', story=story)
 
 
 

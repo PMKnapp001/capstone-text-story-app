@@ -10,6 +10,14 @@
     {% block head %}{% endblock %}
   </head>
   <body>
+    {% if session['user_id'] %}
+    <form action="/">
+      <input type="submit" value="Home">
+    </form>
+    <form action="/user/logout">
+      <input type="submit" value="Logout">
+    </form>
+    {% endif %}
     {% for msg in get_flashed_messages() %}
     <p class="flash-msg">
       {{ msg }}

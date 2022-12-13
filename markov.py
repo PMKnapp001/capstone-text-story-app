@@ -4,7 +4,7 @@ from random import choice
 
 
 def open_and_read_file(file):
-    """Returns string from contents of file in file_path."""
+    """Returns string from contents of file."""
 
     content = ""
 
