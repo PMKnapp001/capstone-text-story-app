@@ -13,10 +13,73 @@ def homepage():
     return render_template('homepage.html')
 
 
+@app.route('/users')
+def users():
+    session['user_id'] = ""
+
+    return render_template("account.html")
+
+
+@app.route('/users/new', methods=["POST"])
+def new_user():
+
+    username = request.form.get('username')
+    email = request.form.get('email')
+    password = request.form.get('password')
+
+    if crud.get_user_by_username(username):
+        flash(f"Account with username {username} already created.")
+        return redirect("/users")
+
+    elif crud.get_user_by_email(email):
+        flash(f"Account with email {email} already created.")
+        return redirect("/users")    
+
+    else:
+        user = crud.create_user(username=username,email=email,password=password)
+
+        db.session.add(user)
+        db.session.commit()
+
+        flash(f"User {username} created.")
+
+        return redirect('/')
+
+
+@app.route('/users/login', methods=["POST"])
+def login_user():
+
+    username = request.form.get('username')
+    password = request.form.get('password')
+
+    user_from_db = crud.get_user_by_username(username)
+
+    if user_from_db:
+        if password == user_from_db.password:
+            user_id = user_from_db.user_id
+
+            session['user_id'] = user_id
+
+            flash(f"Logged in as {username}.")
+
+            return redirect('/')
+
+        else:
+            flash("Password Incorrect.")
+
+            return redirect("/users") 
+
+    else:
+        flash(f"No account with username {username} exists.")
+
+        return redirect("/users")
+   
+
+
 @app.route('/test-play-story')
 def test_story():
 
-    story = crud.get_story_by_id(1)
+    story = crud.get_story_by_id(2)
 
     intro = story.get_intro_branch()
 
@@ -43,8 +106,9 @@ def get_branch():
 @app.route('/stories/new')
 def new_story():
 
-    session['story_id'] = []
-    session['intro_branch_id'] = []
+    session['story_id'] = ""
+    session['intro_branch_id'] = ""
+    session['previous_branch_id'] = ""
 
     return render_template('createstory.html')
 
@@ -66,20 +130,25 @@ def add_story():
     print(f"story_id = {story_id}")
 
     session['story_id'] = story_id
-    # session['title'] = title
-    # session['synopsis'] = synopsis
-
+  
     flash(f"Story created.")
 
     return redirect(f'/stories/{story_id}/branches/new')
 
+@app.route('/stories/<story_id>/branches/<branch_id>/updateid')
+def update_prev_branch_id(story_id, branch_id):
+    
+    story_id = story_id
+
+    session['previous_branch_id'] = branch_id
+
+    return redirect(f'/stories/{story_id}/branches/new')
 
 
 @app.route('/stories/<story_id>/branches/new')
 def new_branch(story_id):
 
     story = crud.get_story_by_id(story_id)
-
 
     return render_template('createstory.html', story=story)
 
@@ -155,9 +224,17 @@ def add_branch(story_id):
         branch_id = branch.branch_id
         session['previous_branch_id'] = branch_id
       
-
-    # return render_template('createbranches.html', story=story_to_update, intro=intro_branch)
     return redirect(f'/stories/{story_id}/branches/new')
+
+
+@app.route('/stories/<story_id>/branches')
+def show_branches(story_id):
+
+    story = crud.get_story_by_id(story_id)
+
+
+    return render_template('showstory.html', story=story)
+
 
 
 

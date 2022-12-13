@@ -13,7 +13,7 @@ function turnButtonsOff(previousButtonId) {
 
 
 const choiceButtons = document.querySelectorAll('.branch-choice');
-turnButtonsOff("1");
+turnButtonsOff("8");
 
 for (const button of choiceButtons) {
     button.addEventListener('click', (evt) => {
