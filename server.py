@@ -139,6 +139,23 @@ def new_story():
     return render_template('createstory.html')
 
 
+@app.route('/stories/<story_id>/ratings/new', methods=["POST"])
+def add_rating(story_id):
+
+    story = crud.get_story_by_id(story_id)
+    user_id = session['user_id']
+    score = request.form.get('rating')
+
+    rating = crud.create_rating(score=score, user_id=user_id, story_id=story.story_id)
+
+    db.session.add(rating)
+    db.session.commit()
+
+    flash(f"Rating for {story.title} successfully submitted.")
+
+    return redirect(f'/user/{user_id}/stories/{story.story_id}')
+
+
 @app.route('/stories/new', methods=["POST"])
 def add_story():
 

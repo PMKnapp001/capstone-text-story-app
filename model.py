@@ -56,12 +56,32 @@ class Story(db.Model):
         
         return f"<Story story_id={self.story_id} title={self.title}>"
 
+
     def get_intro_branch(self):
         """Return branch that serves as intro for story."""
 
         return Branch.query.filter(Branch.branch_id == self.first_branch_id).first()
 
 
+    def get_average_rating(self):
+            """Returns average rating score for story_id argument."""
+ 
+            all_ratings = Rating.query.filter(Rating.story_id == self.story_id).all()
+
+            if not all_ratings:
+                return "No ratings."
+
+            else:
+                average_score = 0
+                total_score = 0
+                count = 0
+
+                for rating in all_ratings:
+                    total_score += rating.score
+                    count += 1
+                average_score = total_score/count
+        
+                return average_score
 
 
 class Branch(db.Model):

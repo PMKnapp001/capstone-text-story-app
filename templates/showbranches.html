@@ -2,9 +2,7 @@
 {% block title %}Story App Add Branch{% endblock %}
 
 {% block body %}
-<form action="/user/{{ session['user_id'] }}/stories">
-    <input type="submit" value="Go To Stories">
-</form>
+<a href="/user/{{ session['user_id'] }}/stories"><button>Go To Stories</button></a>
 <div id="branches-div">
     Branches for Story ID: {{ story.story_id }} 
 

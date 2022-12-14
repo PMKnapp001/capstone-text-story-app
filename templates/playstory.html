@@ -2,15 +2,23 @@
 {% block title %}Play Story{% endblock %}
 
 {% block body %}
-<form action="/user/{{ session['user_id'] }}/stories">
-    <input type="submit" value="Go To Stories">
-</form>
+<a href="/user/{{ session['user_id'] }}/stories"><button>Go To Stories</button></a>
 <h1>{{ story.title }}</h1>
 <h2>By {{ user.username }}
 <button id="ghost-button-branch-id" value="{{ intro.branch_id }}" style="display: none"></button>
 <h3>
   Synopsis: {{ story.synopsis }}
 </h3>
+
+<span>
+    <strong>Rate this Story(1-5):</strong>
+<br>
+    <form action="/stories/{{ story.story_id }}/ratings/new" method="POST">
+        <input type="number" name ='rating' min="1" max="5">
+<br>
+        <input type="submit" value="Submit Rating"></input>
+    </form>
+</span>
 
 <div id="intro-branch">
     Intro: {{ intro.body }}

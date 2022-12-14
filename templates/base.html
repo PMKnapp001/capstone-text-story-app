@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
+    <link href="/static/style/style.css" rel="stylesheet">
     <title>
       {% block title %}{% endblock %}
     </title>
@@ -11,17 +12,15 @@
   </head>
   <body>
     {% if session['user_id'] %}
-    <form action="/">
-      <input type="submit" value="Home">
-    </form>
-    <form action="/user/logout">
-      <input type="submit" value="Logout">
-    </form>
+    <a href="/"><button>Home</button></a>
+<br>
+    <a href="/user/logout"><button>Logout</button></a>
     {% endif %}
     {% for msg in get_flashed_messages() %}
     <p class="flash-msg">
       {{ msg }}
     </p>
+    <br>
     {% endfor %}
 
     {% block body %} {% endblock %}

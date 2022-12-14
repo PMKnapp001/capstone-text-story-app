@@ -2,8 +2,9 @@
 {% block title %}Story App Account Page{% endblock %}
 
 {% block body %}
-<div>
+<div class="account-button-container">
     <button class="account-buttons" id="create">Create an Account</button>
+<br>
     <button class="account-buttons" id="login">Login to Account</button>
 </div>
 
@@ -12,13 +13,13 @@
     <form action="/users/new" method="POST">
         <label for="username">Username: </label>
         <input type="text" name="username" id="username">
-
+<br>
         <label for="email">Email: </label>
         <input type="text" name="email" id="email">
-
+<br>
         <label for="password">Password: </label>
         <input type="password" name="password" id="password">
-        
+<br>      
         <input type="submit" id="account-create" value="Create Account">
     </form>
 </div>
@@ -28,10 +29,10 @@
     <form action="/users/login" method="POST">
         <label for="username">Username: </label>
         <input type="text" name="username" id="username">
-
+<br>
         <label for="password">Password: </label>
         <input type="password" name="password" id="password">
-        
+<br>      
         <input type="submit" id="account-login" value="Login">
     </form>
 </div>

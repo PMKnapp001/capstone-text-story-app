@@ -4,9 +4,14 @@
 {% block body %}
     <h2>{{ user.username }}'s Stories</h2>
     {% for story in stories %}
-    <form action="/user/{{ user.user_id }}/stories/{{ story.story_id }}">
-        <input type="submit" id="{{ story.story_id }}" value="{{ story.title }}">
-    </form>
+    <li>
+        <a href="/user/{{ user.user_id }}/stories/{{ story.story_id }}">
+            <button id="{{ story.story_id }}">
+                {{ story.title }}
+            </button>
+        </a>
+        <div>Rating: {{ story.get_average_rating() }}</div>
+    </li>
     {% endfor %}
 
 {% endblock %}
