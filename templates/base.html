@@ -11,6 +11,7 @@
     {% block head %}{% endblock %}
   </head>
   <body>
+    {% import 'formmacros.html' as form %}
     {% if session['user_id'] %}
     <a href="/"><button>Home</button></a>
 <br>

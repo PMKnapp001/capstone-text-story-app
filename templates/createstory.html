@@ -8,10 +8,10 @@
   <form action="/stories/new" method="POST">
     <label for="title">Story Title:</label>
     <input type="text" name="title" id="title">
-<br>
+
     <label for="synopsis">Story Synopsis:</label>
     <textarea name="synopsis" id="synopsis"></textarea>
-<br>
+
     <input type="submit" id="story-submit" value="Submit!">
   </form>
 </div>
@@ -29,40 +29,14 @@
     <h3>Previous Branch ID: {{ session['previous_branch_id'] }}</h3>
         <div id="intro-form">
             <form action="/stories/{{ story.story_id }}/branches/new" method="POST">
-              {% if not session['intro_branch_id'] %}
-                <label for="body">Intro body: </label>
-                <textarea name="body" id="body"></textarea>
-<br>
-                <label for="prompt">Enter the prompt for the next choice(if any): </label>
-                <textarea name="prompt" id="prompt" value="abc"></textarea>
-<br>
-                <label for="is-end">Does the story stop here?</label>
-<br>
-                <input type="radio" name="is-end" value="false" id="no">
-                <label for="no">No</label>
-<br>
-                <input type="radio" name="is-end" value="true" id="yes">
-                <label for="yes">Yes</label>
-              {% endif %}
-              {% if session['intro_branch_id'] %}
-                <label for="description">Enter a brief description of your branch(one sentence): </label>
-                <textarea name="description" id="description"></textarea>
-<br>
-                <label for="body">Branch body: </label>
-                <textarea name="body" id="body"></textarea>
-<br>
-                <label for="prompt">Enter the prompt for the next choice(if any): </label>
-                <textarea name="prompt" id="prompt" value="abc"></textarea>
-<br>
-                <label for="is-end">Does the story stop here?</label>
-<br>
-                <input type="radio" name="is-end" value="false" id="no">
-                <label for="no">No</label>
-<br>
-                <input type="radio" name="is-end" value="true" id="yes">
-                <label for="yes">Yes</label>
-              {% endif %}
-<br>
+                {% if not session['intro_branch_id'] %}
+                  {{ form.branch_form("Intro Branch") }}
+                {% endif %}
+                {% if session['intro_branch_id'] %}
+                  <label for="description">Enter a brief description of your branch(one sentence): </label>
+                  <textarea name="description" id="description"></textarea>
+                  {{ form.branch_form("Branch Body") }}
+                {% endif %}
                 <input type="submit" id="branch-submit" value="Submit Branch">
             </form>
             <a href="/stories/{{ story.story_id }}/branches"><button id="branch-overview">View Branches</button></a>
