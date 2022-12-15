@@ -84,6 +84,16 @@ class Story(db.Model):
                 return average_score
 
 
+    def make_story_tree(self):
+        """Returns dictionary of branch ids with current id as key 
+        and child branch id as empty dictionarys or or value if that
+        branch does not have children."""
+
+        # {branch_id:1, children: [...], branch_desc: blahblah}
+
+        return self.get_intro_branch().make_story_tree()
+
+
 class Branch(db.Model):
     """Branch class."""
     
@@ -117,6 +127,20 @@ class Branch(db.Model):
         """Returns all sub branches for current branch."""
 
         return Branch.query.filter(Branch.prev_branch_id == self.branch_id).order_by(Branch.ordinal).all()
+
+    def make_story_tree(self):
+        """Returns dictionary of branch ids with current id as key 
+        and child branch id as empty dictionarys or or value if that
+        branch does not have children."""
+
+        # {branch_id:1, children: [...], branch_desc: blahblah}
+
+        children_branches=[]
+        next_branches = self.get_next_branches()
+        for branch in next_branches:
+            children_branches.append(branch.make_story_tree())
+        branch_tree={"branch_id":self.branch_id, "children":children_branches, "branch_desc":self.description}
+        return branch_tree
 
 
 class Rating(db.Model):

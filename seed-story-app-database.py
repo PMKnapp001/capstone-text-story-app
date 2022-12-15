@@ -170,5 +170,8 @@ for branch in a_branches:
     create_branches(test_story3, branch, "b", "rabbits-bride.txt")
 
 
+test_story_tree = test_story1.make_story_tree()
+
+# print(test_story_tree)
 
 
