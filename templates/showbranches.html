@@ -2,13 +2,9 @@
 {% block title %}Story App Add Branch{% endblock %}
 
 {% block body %}
-<a href="/user/{{ session['user_id'] }}/stories"><button>Go To Stories</button></a>
-<div id="branches-div">
-    Branches for Story ID: {{ story.story_id }} 
 
-    {% for branch in story.branches %}
-    <li><a href="/stories/{{ story.story_id }}/branches/{{ branch.branch_id }}/updateid" id="branch-{{ branch.branch_id }}" class="branch-link">{{ branch.description }}</a></li>
-    {% endfor %}    
-</div>
+{{ jin_macs.show_branches(story_tree) }}
 
 {% endblock %}
+
+

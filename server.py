@@ -19,6 +19,7 @@ def homepage():
 
 @app.route('/users')
 def users():
+    
     session['user_id'] = ""
 
     return render_template("account.html")
@@ -273,9 +274,11 @@ def add_branch(story_id):
 def show_branches(story_id):
 
     story = crud.get_story_by_id(story_id)
+    branches = story.branches
+    story_tree = story.make_story_tree()
+    print(story_tree)
 
-
-    return render_template('showbranches.html', story=story)
+    return render_template('showbranches.html', story=story, story_tree=story_tree, branches=branches)
 
 
 

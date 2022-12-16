@@ -13,3 +13,16 @@
     <input type="radio" name="is-end" value="true" id="yes">
     <label for="yes">Yes</label>
 {%- endmacro %}
+
+{%- macro show_branches(tree_branch) -%}
+    <ul>
+       <li><a href="/stories/{{ session['story_id'] }}/branches/{{ tree_branch['branch_id'] }}/updateid">
+                ID: {{ tree_branch['branch_id'] }} Desc:{{ tree_branch['branch_desc'] }}
+            </a>
+        {% for child in tree_branch['children'] %}
+            {{ show_branches(child) }}
+        {% endfor %}
+       </li> 
+    </ul>   
+{%- endmacro -%}
+

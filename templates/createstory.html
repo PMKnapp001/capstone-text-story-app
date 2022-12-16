@@ -30,12 +30,12 @@
         <div id="intro-form">
             <form action="/stories/{{ story.story_id }}/branches/new" method="POST">
                 {% if not session['intro_branch_id'] %}
-                  {{ form.branch_form("Intro Branch") }}
+                  {{ jin_macs.branch_form("Intro Branch") }}
                 {% endif %}
                 {% if session['intro_branch_id'] %}
                   <label for="description">Enter a brief description of your branch(one sentence): </label>
                   <textarea name="description" id="description"></textarea>
-                  {{ form.branch_form("Branch Body") }}
+                  {{ jin_macs.branch_form("Branch Body") }}
                 {% endif %}
                 <input type="submit" id="branch-submit" value="Submit Branch">
             </form>
