@@ -105,8 +105,10 @@ def view_story(user_id, story_id):
     user = crud.get_user_by_id(user_id)
 
     story = crud.get_story_by_id(story_id)
+    session['story_id'] = story_id
 
     intro = story.get_intro_branch()
+    session['intro_branch_id'] = intro.branch_id
 
     all_branches = story.branches
 
@@ -193,7 +195,20 @@ def new_branch(story_id):
 
     story = crud.get_story_by_id(story_id)
 
-    return render_template('createstory.html', story=story)
+    if session['previous_branch_id']:
+        prev_branch = crud.get_branch_by_id(session['previous_branch_id'])
+
+        ancestor = crud.get_branch_by_id(prev_branch.prev_branch_id)
+        siblings = prev_branch.get_next_branches()
+        print("sibling from if")
+
+    else:
+        siblings = []
+        ancestor = []
+
+        print("sibling from else")
+        print(f"siblings: {siblings}")
+    return render_template('createstory.html', story=story, siblings=siblings, ancestor=ancestor)
 
 
 
@@ -246,6 +261,7 @@ def add_branch(story_id):
         body = request.form.get('body')
         branch_prompt = request.form.get('prompt')
         is_end = request.form.get('is-end')
+        next= request.form.get('next')
         ordinal = 0
 
         if is_end == "true":
@@ -265,7 +281,9 @@ def add_branch(story_id):
         db.session.commit()
 
         branch_id = branch.branch_id
-        session['previous_branch_id'] = branch_id
+
+        if next == "child":
+            session['previous_branch_id'] = branch_id
       
     return redirect(f'/stories/{story_id}/branches/new')
 
@@ -273,10 +291,13 @@ def add_branch(story_id):
 @app.route('/stories/<story_id>/branches')
 def show_branches(story_id):
 
+    print(f"story id = {story_id}")
+
     story = crud.get_story_by_id(story_id)
+    print(story)
+
     branches = story.branches
     story_tree = story.make_story_tree()
-    print(story_tree)
 
     return render_template('showbranches.html', story=story, story_tree=story_tree, branches=branches)
 
