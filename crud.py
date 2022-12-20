@@ -11,12 +11,33 @@ def create_user(username, password, email):
     return user
 
 
+def delete_user(user_id):
+    """Deletes ratings, stories, and then user."""
+
+    user = get_user_by_id(user_id)
+    all_stories_for_user = Story.query.filter(Story.user_id == user_id).all()
+    delete_ratings_for_user(user_id)
+    for story in all_stories_for_user:
+        delete_story(story.story_id)
+    db.session.delete(user)
+    db.session.commit()
+
 def create_story(user_id, synopsis, title):
     """Creates a story."""
 
     story = Story(user_id=user_id, synopsis=synopsis, title=title)
 
     return story
+
+
+def delete_story(story_id):
+    """Deletes ratings, branches for story and then deletes story."""    
+
+    story = Story.query.get(story_id)
+    delete_ratings_for_story(story.story_id)
+    delete_branch_and_descendants(story.first_branch_id)
+    db.session.delete(story)
+    db.session.commit()
 
 
 def create_branch(story_id, prev_branch_id, description, body, branch_prompt, is_end, ordinal):
@@ -33,12 +54,44 @@ def create_branch(story_id, prev_branch_id, description, body, branch_prompt, is
     return branch
 
 
+def delete_branch_and_descendants(branch_id):
+    """Deletes branch after deleting children branches."""
+
+    branch = Branch.query.get(branch_id)
+    for child in branch.get_next_branches():
+        delete_branch_and_descendants(child.branch_id)
+        db.session.delete(child)
+        db.session.commit()
+    db.session.delete(branch)
+    db.session.commit()
+
+
 def create_rating(score, user_id, story_id):
     """Creates a rating."""
     
     rating = Rating(score=score, user_id=user_id, story_id=story_id)
 
     return rating
+
+
+def delete_ratings_for_story(story_id):
+    """Deletes ratings for a story."""
+
+    all_ratings_for_story = Rating.query.filter(Rating.story_id == story_id).all()
+
+    for rating in all_ratings_for_story:
+        db.session.delete(rating)
+        db.session.commit()
+
+
+def delete_ratings_for_user(user_id):
+    """Deletes ratings for a story."""
+
+    all_ratings_for_user = Rating.query.filter(Rating.user_id == user_id).all()
+
+    for rating in all_ratings_for_user:
+        db.session.delete(rating)
+        db.session.commit()
 
 
 def get_all_stories():

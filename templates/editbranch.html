@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% block title %}Story App Edit Branch{% endblock %}
+
+{% block body %}
+
+  <h1 id="edit-id">Story ID: {{ story.story_id }}</h1>
+  <h1 id="title">Title: {{ story.title }}</h1>
+  <div id="synopsis">Synopsis: {{ story.synopsis }}</div>
+  <h3>
+    <a href="/stories/{{ story.story_id }}/edit/branches/{{ session['intro_branch_id'] }}">
+      <button>Intro branch ID: {{ session['intro_branch_id'] }}</button>
+    </a>
+  </h3>
+  {% if ancestor %}
+    <h3>
+      <a href="/stories/{{ story.story_id }}/edit/branches/{{ ancestor.branch_id }}">
+        <button>Ancestor branch ID: {{ ancestor.branch_id }}</button>
+      </a>
+    </h3>
+  {% endif %}
+
+  <h3>
+    <a href="/stories/{{ story.story_id }}/edit/branches/{{ session['previous_branch_id'] }}">
+        <button>Previous Branch ID: {{ session['previous_branch_id'] }}</button>
+    </a>
+</h3>
+  <div id="intro-form">
+    <form action="" method="POST">
+    {% if not session['previous_branch_id'] %}
+        <label for="body">Intro: </label>
+        <textarea name="body" id="body">{{ branch.body }}</textarea>
+
+        <label for="prompt">Enter the prompt for the next choice(if any): </label>
+        <textarea name="prompt" id="prompt">{{ branch.branch_prompt }}</textarea>
+
+        <label for="is-end">Does the story stop here?</label>
+
+        <input type="radio" name="is-end" value="false" id="no">
+        <label for="no">No</label>
+
+        <input type="radio" name="is-end" value="true" id="yes">
+        <label for="yes">Yes</label>
+        <input type="submit" id="branch-submit" value="Submit Branch">
+    </form>
+    {% endif %}
+    {% if session['previous_branch_id'] %}
+        <label for="description">Enter a brief description of your branch(one sentence): </label>
+        <textarea name="description" id="description">{{ branch.description }}</textarea>
+        
+        <label for="body">Branch Body: </label>
+        <textarea name="body" id="body">{{ branch.body }}</textarea>
+
+        <label for="prompt">Enter the prompt for the next choice(if any): </label>
+        <textarea name="prompt" id="prompt" value="">{{ branch.branch_prompt }}</textarea>
+
+        <label for="is-end">Does the story stop here?</label>
+
+        <input type="radio" name="is-end" value="false" id="no">
+        <label for="no">No</label>
+
+        <input type="radio" name="is-end" value="true" id="yes">
+        <label for="yes">Yes</label>
+
+        <input type="submit" id="branch-submit" value="Submit Branch">
+    </form>
+    {% endif %}
+  </div>
+
+{% if siblings %}
+  <div>
+    Sibling Branches:
+    {% for sibling in siblings %}
+      <a href="/stories/{{ story.story_id }}/edit/branches/{{ sibling.branch_id }}">
+        <button id="sibling-{{ sibling.branch_id }}">{{ sibling.branch_id }}: {{ sibling.description }}</button>
+      </a>
+    {% endfor %}
+  </div>
+{% endif %}
+
+{% if children %}
+  <div>
+    Children Branches:
+    {% for child in children %}
+      <a href="/stories/{{ story.story_id }}/edit/branches/{{ child.branch_id }}">
+        <button id="child-{{ child.branch_id }}">{{ child.branch_id }}: {{ child.description }}</button>
+      </a>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<a href="/stories/{{ story.story_id }}/branches">
+  <button id="branch-overview">View Branches</button>
+</a>
+{% endblock %}

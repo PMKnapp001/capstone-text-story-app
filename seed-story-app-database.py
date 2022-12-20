@@ -169,9 +169,21 @@ a_branches = model.Branch.query.filter(model.Branch.prev_branch_id == test_intro
 for branch in a_branches:
     create_branches(test_story3, branch, "b", "rabbits-bride.txt")
 
+for _ in range(10):
+    score = randint(1,5)
+    rating1 = crud.create_rating(score, 1, test_story1.story_id)
+    score = randint(1,5)
+    rating2 = crud.create_rating(score, 1, test_story2.story_id)
+    score = randint(1,5)
+    rating3 = crud.create_rating(score, 1, test_story3.story_id)
+    
+    model.db.session.add(rating1)
+    model.db.session.add(rating2)
+    model.db.session.add(rating3)
 
-test_story_tree = test_story1.make_story_tree()
+model.db.session.commit()
 
-# print(test_story_tree)
+
+
 
 

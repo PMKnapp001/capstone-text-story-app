@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Story App Edit Story{% endblock %}
+
+{% block body %}
+<a href="/user/{{ session['user_id'] }}/stories"><button>Go To Stories</button></a>
+<div id="edit-story-form">
+  <form action="/stories/{{ story.story_id }}/edit" method="POST">
+    <label for="title">Story Title:</label>
+    <input type="text" name="title" id="edit-title" value="{{ story.title }}">
+
+    <label for="synopsis">Story Synopsis:</label>
+    <textarea name="synopsis" id="edit-synopsis">{{ story.synopsis }}</textarea>
+
+    <input type="submit" id="story-submit" value="Submit!">
+  </form>
+</div>
+
+<a href="/stories/{{ story.story_id }}/edit/branches/{{ story.first_branch_id }}"><button>Edit Branches</button></a>
+{% endblock %}
