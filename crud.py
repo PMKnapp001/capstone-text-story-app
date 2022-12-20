@@ -58,6 +58,12 @@ def delete_branch_and_descendants(branch_id):
     """Deletes branch after deleting children branches."""
 
     branch = Branch.query.get(branch_id)
+    story = branch.story
+    if story.first_branch_id == int(branch_id):
+        story.first_branch_id == None
+        db.session.add(story)
+        db.session.commit()
+
     for child in branch.get_next_branches():
         delete_branch_and_descendants(child.branch_id)
         db.session.delete(child)

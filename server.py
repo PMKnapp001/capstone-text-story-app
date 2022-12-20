@@ -108,9 +108,13 @@ def view_story(user_id, story_id):
     story = crud.get_story_by_id(story_id)
     session['story_id'] = story_id
 
-    intro = story.get_intro_branch()
-    session['intro_branch_id'] = intro.branch_id
-
+    intro_id = story.first_branch_id
+    session['intro_branch_id'] = intro_id
+    if intro_id:
+        intro = crud.get_branch_by_id(intro_id)
+        
+    else:
+        intro = ""
     all_branches = story.branches
 
 
@@ -289,13 +293,44 @@ def add_branch(story_id):
 @app.route('/stories/<story_id>/edit')
 def get_story_to_edit(story_id):
 
+    story = crud.get_story_by_id(story_id)
     session['story_id'] = story_id
-    session['intro_branch_id'] = ""
+
+    if story.first_branch_id:
+        session['intro_branch_id'] = story.first_branch_id
+    else:
+        session['intro_branch_id'] = ""
+
     session['previous_branch_id'] = ""
 
     story = crud.get_story_by_id(story_id)
 
     return render_template(f'editstory.html', story=story)
+
+
+@app.route('/stories/<story_id>/delete')
+def delete_story(story_id):
+
+    crud.delete_story(story_id)
+
+    return redirect(f"/user/{session['user_id']}/stories")
+
+
+@app.route('/stories/<story_id>/delete/branches/<branch_id>')
+def delete_branch(story_id, branch_id):
+
+    branch = crud.get_branch_by_id(branch_id)
+    prev_branch_id = branch.prev_branch_id
+    crud.delete_branch_and_descendants(branch_id)
+    if prev_branch_id:
+        branch_id = prev_branch_id
+
+        return redirect(f'/stories/{story_id}/edit/branches/{branch_id}')
+    
+    session['previous_branch_id'] = ""
+    session['intro_branch_id'] = ""
+
+    return redirect(f'/stories/{story_id}/branches/new')
 
 
 @app.route('/stories/<story_id>/edit', methods=["POST"])
@@ -317,18 +352,21 @@ def get_branch_to_edit(story_id, branch_id):
     story = crud.get_story_by_id(story_id)
     branch = crud.get_branch_by_id(branch_id)
     session['intro_branch_id'] = story.first_branch_id
-    children = branch.get_next_branches()
-    siblings = []
-    ancestor = []
-    
-    if story.first_branch_id != branch.branch_id:
-        session['previous_branch_id'] = branch.prev_branch_id
-        prev_branch = crud.get_branch_by_id(session['previous_branch_id'])
-        ancestor = crud.get_branch_by_id(prev_branch.prev_branch_id)
-        siblings = prev_branch.get_next_branches()
-        siblings.pop(siblings.index(branch))
-    
-    return render_template('editbranch.html', story=story, branch=branch, siblings=siblings, ancestor=ancestor, children=children)
+    if session['intro_branch_id']:
+        children = branch.get_next_branches()
+        siblings = []
+        ancestor = []
+        
+        if story.first_branch_id != branch.branch_id:
+            session['previous_branch_id'] = branch.prev_branch_id
+            prev_branch = crud.get_branch_by_id(session['previous_branch_id'])
+            ancestor = crud.get_branch_by_id(prev_branch.prev_branch_id)
+            siblings = prev_branch.get_next_branches()
+            siblings.pop(siblings.index(branch))
+        
+        return render_template('editbranch.html', story=story, branch=branch, siblings=siblings, ancestor=ancestor, children=children)
+
+    return redirect(f'/stories/{story_id}/branches/new')
 
 
 @app.route('/stories/<story_id>/edit/branches/<branch_id>', methods=["POST"])

@@ -15,5 +15,14 @@
   </form>
 </div>
 
-<a href="/stories/{{ story.story_id }}/edit/branches/{{ story.first_branch_id }}"><button>Edit Branches</button></a>
+{% if session['intro_branch_id'] %}
+  <a href="/stories/{{ story.story_id }}/edit/branches/{{ story.first_branch_id }}"><button>Edit Branches</button></a>
+{% endif %}
+
+{% if not session['intro_branch_id'] %}
+<a href="/stories/{{ story.story_id }}/branches/new"><button>Create Intro Branch</button></a>
+{% endif %}
+
+<a href="/stories/{{ story.story_id }}/delete"><button>Delete Story</button></a>
+
 {% endblock %}

@@ -5,47 +5,54 @@
 <a href="/user/{{ session['user_id'] }}/stories"><button>Go To Stories</button></a>
 <h1>{{ story.title }}</h1>
 <h2>By {{ user.username }}
-<button id="ghost-button-branch-id" value="{{ intro.branch_id }}" style="display: none"></button>
+
 <h3>
   Synopsis: {{ story.synopsis }}
 </h3>
 
-<span>
-    <strong>Rate this Story(1-5):</strong>
-<br>
-    <form action="/stories/{{ story.story_id }}/ratings/new" method="POST">
-        <input type="number" name ='rating' min="1" max="5">
-<br>
-        <input type="submit" value="Submit Rating"></input>
-    </form>
+{% if intro %}    
+    <button id="ghost-button-branch-id" value="{{ intro.branch_id }}" style="display: none"></button>
 
-<a href="/stories/{{ story.story_id }}/edit"><button>Edit Story</button></a>
-</span>
+    <span>
+        <strong>Rate this Story(1-5):</strong>
+    <br>
+        <form action="/stories/{{ story.story_id }}/ratings/new" method="POST">
+            <input type="number" name ='rating' min="1" max="5" value="1">
+    <br>
+            <input type="submit" value="Submit Rating"></input>
+        </form>
 
-<a href="/stories/{{ story.story_id }}/branches">
-  <button id="branch-overview">View Branches</button>
-</a>
+    <a href="/stories/{{ story.story_id }}/edit"><button>Edit Story</button></a>
+    </span>
 
-<div id="intro-branch">
-    Intro: {{ intro.body }}
-</div>
+    <a href="/stories/{{ story.story_id }}/branches">
+    <button id="branch-overview">View Branches</button>
+    </a>
 
-<div>
-    Prompt: {{ intro.branch_prompt }}
-</div>
+    <div id="intro-branch">
+        Intro: {{ intro.body }}
+    </div>
+
+    <div>
+        Prompt: {{ intro.branch_prompt }}
+    </div>
 
 
-<div id="buttons-div" >
-    Options:
-    {% for branch in all_branches[1:] %}
-    {# {% for branch in all_branches %} #}
-    <ul class="branch-prev" id="{{ branch.prev_branch_id }}">
-        
-        <li><button value="{{ branch.branch_id }}" class="branch-choice">{{ branch.description }}</a></li>
-        
-    </ul>
-    {% endfor %}
-</div>
+    <div id="buttons-div" >
+        Options:
+        {% for branch in all_branches[1:] %}
+        {# {% for branch in all_branches %} #}
+        <ul class="branch-prev" id="{{ branch.prev_branch_id }}">
+            
+            <li><button value="{{ branch.branch_id }}" class="branch-choice">{{ branch.description }}</a></li>
+            
+        </ul>
+        {% endfor %}
+    </div>
+{% endif %}
 
+{% if not intro %}
+    <h3>Story in development... Check back soon!</h3>
+{% endif %}
 
 {% endblock %}

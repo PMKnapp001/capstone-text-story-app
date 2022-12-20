@@ -11,19 +11,23 @@
       <button>Intro branch ID: {{ session['intro_branch_id'] }}</button>
     </a>
   </h3>
-  {% if ancestor %}
+
+  {% if session['previous_branch_id'] %}
+    {% if ancestor %}
+      <h3>
+        <a href="/stories/{{ story.story_id }}/edit/branches/{{ ancestor.branch_id }}">
+          <button>Ancestor branch ID: {{ ancestor.branch_id }}</button>
+        </a>
+      </h3>
+    {% endif %}
+
     <h3>
-      <a href="/stories/{{ story.story_id }}/edit/branches/{{ ancestor.branch_id }}">
-        <button>Ancestor branch ID: {{ ancestor.branch_id }}</button>
+      <a href="/stories/{{ story.story_id }}/edit/branches/{{ session['previous_branch_id'] }}">
+          <button>Previous Branch ID: {{ session['previous_branch_id'] }}</button>
       </a>
     </h3>
   {% endif %}
 
-  <h3>
-    <a href="/stories/{{ story.story_id }}/edit/branches/{{ session['previous_branch_id'] }}">
-        <button>Previous Branch ID: {{ session['previous_branch_id'] }}</button>
-    </a>
-</h3>
   <div id="intro-form">
     <form action="" method="POST">
     {% if not session['previous_branch_id'] %}
@@ -90,5 +94,8 @@
 
 <a href="/stories/{{ story.story_id }}/branches">
   <button id="branch-overview">View Branches</button>
+</a>
+<a href="/stories/{{ story.story_id }}/delete/branches/{{ branch.branch_id }}">
+  <button>Delete Branch</button>
 </a>
 {% endblock %}
