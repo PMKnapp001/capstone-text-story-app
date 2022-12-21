@@ -13,6 +13,7 @@
 {% if intro %}    
     <button id="ghost-button-branch-id" value="{{ intro.branch_id }}" style="display: none"></button>
 
+    {% if user.user_id != session['user_id'] %}
     <span>
         <strong>Rate this Story(1-5):</strong>
     <br>
@@ -21,13 +22,16 @@
     <br>
             <input type="submit" value="Submit Rating"></input>
         </form>
+    {% endif %}
 
-    <a href="/stories/{{ story.story_id }}/edit"><button>Edit Story</button></a>
-    </span>
+    {% if user.user_id == session['user_id'] %}
+        <a href="/stories/{{ story.story_id }}/edit"><button>Edit Story</button></a>
+        </span>
 
-    <a href="/stories/{{ story.story_id }}/branches">
-    <button id="branch-overview">View Branches</button>
-    </a>
+        <a href="/stories/{{ story.story_id }}/branches">
+            <button id="branch-overview">View Branches</button>
+        </a>
+    {% endif %}
 
     <div id="intro-branch">
         Intro: {{ intro.body }}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Story App User Profile{% endblock %}
+
+{% block body %}
+<h1>{{ user.username }}</h1>
+<h2>{{ user.email }}</h2>
+
+<div id="user-ratings">
+    <h3>
+        Ratings for other stories
+    </h3>
+
+    {% for rating in user.ratings %}
+        <li>
+            <a href="/user/{{ rating.story.user_id }}/stories/{{ rating.story_id }}">
+                {{ rating.story.title }} Score: {{ rating.score }}
+            </a>
+        </li>
+    {% endfor %}
+</div>
+
+<div id="user-stories">
+    <h3>
+        Stories
+    </h3>
+
+    {% for story in user.stories %}
+    <li>
+        <a href="/user/{{ user.user_id }}/stories/{{ story.story_id }}">
+            <button id="{{ story.story_id }}">
+                {{ story.title }}
+            </button>
+        </a>
+        <div>Rating: {{ story.get_average_rating() }}</div>
+    </li>
+    {% endfor %}
+</div>
+
+{% endblock %}

@@ -38,28 +38,32 @@ def create_branches(story, prev_branch, path_level, markov_text):
         model.db.session.commit()
 
 # test user record
-test_user = crud.create_user(username="TestUser", password="TestPass", email="user@email.test")
+test_user1 = crud.create_user(username="TestUser1", password="TestPass1", email="user1@email.test")
+test_user2 = crud.create_user(username="TestUser2", password="TestPass2", email="user2@email.test")
+test_user3 = crud.create_user(username="TestUser3", password="TestPass3", email="user3@email.test")
 
-model.db.session.add(test_user)
+model.db.session.add(test_user1)
+model.db.session.add(test_user2)
+model.db.session.add(test_user3)
 model.db.session.commit()
 
 
 # test story record
 test_synopsis = "This is the synopsis for a test story."
 test_title = "The Test"
-test_story1 = crud.create_story(test_user.user_id, test_synopsis, test_title)
+test_story1 = crud.create_story(test_user1.user_id, test_synopsis, test_title)
 model.db.session.add(test_story1)
 model.db.session.commit()
 
 test_synopsis = "This is the synopsis for the second test story."
 test_title = "The Test II: The Retake"
-test_story2 = crud.create_story(test_user.user_id, test_synopsis, test_title)
+test_story2 = crud.create_story(test_user2.user_id, test_synopsis, test_title)
 model.db.session.add(test_story2)
 model.db.session.commit()
 
 test_synopsis = "This is the synopsis for the third test story."
 test_title = "TT3: Pass/Fail"
-test_story3 = crud.create_story(test_user.user_id, test_synopsis, test_title)
+test_story3 = crud.create_story(test_user3.user_id, test_synopsis, test_title)
 model.db.session.add(test_story3)
 model.db.session.commit()
 
@@ -169,21 +173,35 @@ a_branches = model.Branch.query.filter(model.Branch.prev_branch_id == test_intro
 for branch in a_branches:
     create_branches(test_story3, branch, "b", "rabbits-bride.txt")
 
-for _ in range(10):
-    score = randint(1,5)
-    rating1 = crud.create_rating(score, 1, test_story1.story_id)
-    score = randint(1,5)
-    rating2 = crud.create_rating(score, 1, test_story2.story_id)
-    score = randint(1,5)
-    rating3 = crud.create_rating(score, 1, test_story3.story_id)
-    
-    model.db.session.add(rating1)
-    model.db.session.add(rating2)
-    model.db.session.add(rating3)
+
+score = randint(1,5)
+rating1 = crud.create_rating(score, 1, test_story2.story_id)
+score = randint(1,5)
+rating2 = crud.create_rating(score, 1, test_story3.story_id)
+
+model.db.session.add(rating1)
+model.db.session.add(rating2)
 
 model.db.session.commit()
 
 
+score = randint(1,5)
+rating1 = crud.create_rating(score, 2, test_story1.story_id)
+score = randint(1,5)
+rating2 = crud.create_rating(score, 2, test_story3.story_id)
+
+model.db.session.add(rating1)
+model.db.session.add(rating2)
+
+model.db.session.commit()
 
 
+score = randint(1,5)
+rating1 = crud.create_rating(score, 3, test_story1.story_id)
+score = randint(1,5)
+rating2 = crud.create_rating(score, 3, test_story2.story_id)
 
+model.db.session.add(rating1)
+model.db.session.add(rating2)
+
+model.db.session.commit()

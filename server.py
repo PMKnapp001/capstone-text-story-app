@@ -78,7 +78,15 @@ def login_user():
         flash(f"No account with username {username} exists.")
 
         return redirect("/users")
-   
+
+
+@app.route('/users/<user_id>/profile')
+def show_profile(user_id):
+
+    user = crud.get_user_by_id(user_id)
+
+    return render_template('userprofile.html', user=user)
+
 
 @app.route('/user/logout')
 def user_logout():
@@ -116,7 +124,6 @@ def view_story(user_id, story_id):
     else:
         intro = ""
     all_branches = story.branches
-
 
     return render_template('playstory.html', user=user,story=story,intro=intro,all_branches=all_branches)
 

@@ -15,6 +15,7 @@
     {% if session['user_id'] %}
     <a href="/"><button>Home</button></a>
 <br>
+    <a href="/users/{{ session['user_id'] }}/profile"><button>Profile</button></a>
     <a href="/user/logout"><button>Logout</button></a>
     {% endif %}
     {% for msg in get_flashed_messages() %}
