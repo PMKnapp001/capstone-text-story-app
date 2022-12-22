@@ -17,6 +17,21 @@ def homepage():
         return render_template('homepage.html')
 
 
+@app.route('/search')
+def search_page():
+    
+    return render_template('search.html')
+
+# @app.route('/search', methods=["POST"])
+# def submit_search():
+
+#     user_or_story = request.form.get('search-for')
+#     search_text = request.form.get('search-text')
+
+#     results = crud.search_user_or_story(user_or_story, search_text)
+
+#     return redirect('/search')
+
 @app.route('/users')
 def users():
     
@@ -141,6 +156,36 @@ def get_branch():
                     })
     
     return branch_json
+
+
+@app.route('/api/search')
+def get_results():
+
+    user_or_story = request.args.get('user_or_story')
+    search_text = request.args.get('search_text')
+
+    if len(search_text) < 1:
+        results_json = {}
+
+        return results_json
+
+    results = crud.search_user_or_story(user_or_story, search_text)
+    results_dict = {}
+
+    if user_or_story == 'user':
+        for i in range(len(results)):
+            results_dict[i] = {'username': results[i].username,
+                               'user_id': results[i].user_id}
+
+    else:
+        for i in range(len(results)):
+            results_dict[i] = {'title': results[i].title,
+                               'story_id': results[i].story_id,
+                               'user_id': results[i].user_id}
+
+    results_json = jsonify(results_dict)
+    
+    return results_json
 
 
 @app.route('/stories/new')

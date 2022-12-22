@@ -45,7 +45,6 @@
     <div id="buttons-div" >
         Options:
         {% for branch in all_branches[1:] %}
-        {# {% for branch in all_branches %} #}
         <ul class="branch-prev" id="{{ branch.prev_branch_id }}">
             
             <li><button value="{{ branch.branch_id }}" class="branch-choice">{{ branch.description }}</a></li>

@@ -223,6 +223,18 @@ def get_ordinal_for_next_branch(branch_id = 0):
     return ordinal
 
 
+def search_user_or_story(user_or_story, search_for):
+    """Searches for either users or stories that have search_for in username or story title."""
+
+    if user_or_story == 'user':
+        results = User.query.filter(User.username.like(f'%{search_for}%')).all() 
+
+    else:
+        results = Story.query.filter(Story.title.like(f'%{search_for}%')).all()
+
+    print(f"RESULTS FROM SEARCH ==> {results}!!!")
+
+    return results
 
 
 if __name__ == '__main__':
