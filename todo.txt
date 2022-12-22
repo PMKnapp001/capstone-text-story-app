@@ -1,25 +1,21 @@
 TODO:
 
-    1. Implement profile page feature
+    1. Enable automatic story stop in playstory if branch.is_end == True
 
-    2. Implement search feature
-
-    3. Enable automatic story stop in playstory if branch.is_end == True
-
-    4. Clean up files:
+    2. Clean up files:
         crud.py - condense or clear redundant or unused functions
         server.py - condense redundant routes and code in view functions
         macros.html - redo macro for forms to accomodate edit forms
         JS folder - condense or clear redundant or unused functions
 
-    5. Review and compare create forms and edit forms to find if combining would be better implementation.
+    3. Review and compare create forms and edit forms to find if combining would be better implementation.
 
-    6. Code review to find where AJAX could be implemented.
+    4. Code review to find where AJAX could be implemented.
 
-    7. Test!
+    5. Test!
 
-    8. Style with Bootstrap
+    6. Style with Bootstrap
 
-    9. If time allows:
+    7. If time allows:
         Implement Favorites feature
         Implement short story display format
