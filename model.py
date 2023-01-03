@@ -19,6 +19,7 @@ class User(db.Model):
     # Relationships for primary keys and foreign keys
     stories = db.relationship("Story", back_populates="user")
     ratings = db.relationship("Rating", back_populates="user")
+    favorites = db.relationship("Favorite", back_populates="user")
 
 
     def __repr__(self):
@@ -48,6 +49,7 @@ class Story(db.Model):
     # first_branch = db.relationship("Branch", back_populates="story_intro", foreign_keys=[first_branch_id])
     branches = db.relationship("Branch", back_populates="story")
     ratings = db.relationship("Rating", back_populates="story")
+    favorites = db.relationship("Favorite", back_populates="story")
     
     
     # story methods
@@ -107,8 +109,7 @@ class Branch(db.Model):
     description = db.Column(db.Text, nullable = False)
     body = db.Column(db.Text, nullable = False)
     branch_prompt = db.Column(db.Text)
-    is_end = db.Column(db.Boolean, nullable = False, default = False)
-    ordinal = db.Column(db.Integer, nullable = False, default = 1)
+    ordinal = db.Column(db.Integer, nullable = False, index= True, default = 1)
 
     # Relationships for primary keys and foreign keys
     story = db.relationship("Story", back_populates="branches")
@@ -165,6 +166,39 @@ class Rating(db.Model):
         return f"<Rating rating_id={self.rating_id} score={self.score} user_id={self.user_id} story_id={self.story_id}>"
 
 
+
+class Favorite(db.Model):
+    """Favorite class."""
+
+    __tablename__ = "favorites"
+
+    # SQLAlchemy instructions to create table
+    favorite_id = db.Column(db.Integer, autoincrement= True, primary_key= True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+    story_id = db.Column(db.Integer, db.ForeignKey('stories.story_id'))
+
+    # Relationships for primary keys and foreign keys
+    user = db.relationship("User", back_populates="favorites")
+    story = db.relationship("Story", back_populates="favorites")
+
+    def __repr__(self):
+        """Displays info from favorite class."""
+        
+        return f"<Favorite favorite_id={self.favorite_id} user_id={self.user_id} story_id={self.story_id}>"
+
+
+    def get_rating_score(self):
+        """Returns rating for favorited story by user."""
+
+        rating = Rating.query.filter(Rating.story_id == self.story_id, Rating.user_id == self.user_id).first()
+
+        if not rating:
+            score = "No Rating."
+        
+        else:
+            score = rating.score
+
+        return score
 
 
 def connect_to_db(flask_app, db_uri="postgresql:///text-story-app", echo=True):

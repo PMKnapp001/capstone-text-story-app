@@ -14,23 +14,48 @@
     <button id="ghost-button-branch-id" value="{{ intro.branch_id }}" style="display: none"></button>
 
     {% if user.user_id != session['user_id'] %}
-    <span>
-        <strong>Rate this Story(1-5):</strong>
-    <br>
-        <form action="/stories/{{ story.story_id }}/ratings/new" method="POST">
-            <input type="number" name ='rating' min="1" max="5" value="1">
-    <br>
-            <input type="submit" value="Submit Rating"></input>
-        </form>
+        <span>
+            {% if not rating %}
+                <strong>Rate this Story(1-5):</strong>
+            <br>
+                <form action="/stories/{{ story.story_id }}/ratings/new" method="POST">
+                    <input type="number" name ='rating' min="1" max="5" value="1">
+            <br>
+                    <input type="submit" value="Submit Rating"></input>
+                </form>
+            {% endif %}
+
+            {% if rating %}
+                <strong>Current Rating:</strong>
+                <form action="/stories/{{ story.story_id }}/ratings/new" method="POST">
+                    <input type="number" name ='rating' min="1" max="5" value="{{ rating.score }}">
+            <br>
+                    <input type="submit" value="Edit Rating"></input>
+                </form>
+            {% endif %}
+        
+            {% if not favorite %}
+                <a href="/favorites/{{ story.story_id }}/add">
+                    <button id="favorite-add">Add Favorite</button>
+                </a>
+            {% endif %}
+
+            {% if favorite %}
+                <a href="/favorites/{{ story.story_id }}/remove">
+                    <button id="favorite-remove">Remove Favorite</button>
+                </a>
+            {% endif %}
+        </span>
     {% endif %}
 
     {% if user.user_id == session['user_id'] %}
-        <a href="/stories/{{ story.story_id }}/edit"><button>Edit Story</button></a>
-        </span>
+        <span>
+            <a href="/stories/{{ story.story_id }}/edit"><button>Edit Story</button></a>
 
-        <a href="/stories/{{ story.story_id }}/branches">
-            <button id="branch-overview">View Branches</button>
-        </a>
+            <a href="/stories/{{ story.story_id }}/branches">
+                <button id="branch-overview">View Branches</button>
+            </a>
+        </span>
     {% endif %}
 
     <div id="intro-branch">
@@ -43,7 +68,6 @@
 
 
     <div id="buttons-div" >
-        Options:
         {% for branch in all_branches[1:] %}
         <ul class="branch-prev" id="{{ branch.prev_branch_id }}">
             

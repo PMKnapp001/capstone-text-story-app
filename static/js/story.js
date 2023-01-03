@@ -20,7 +20,7 @@ turnButtonsOff(introBranchId);
 for (const button of choiceButtons) {
     button.addEventListener('click', (evt) => {
         evt.preventDefault();
-        console.log("inside play event!!!");
+        // console.log("inside play event!!!");
         turnButtonsOff(button.value);
         const clickedBranchId = button.value;
 

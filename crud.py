@@ -1,6 +1,6 @@
 """Create, Read, Update, Delete Operations for Capstone Text Story App"""
 
-from model import db, User, Story, Branch, Rating, connect_to_db
+from model import db, User, Story, Branch, Rating, Favorite, connect_to_db
 
 
 def create_user(username, password, email):
@@ -17,10 +17,12 @@ def delete_user(user_id):
     user = get_user_by_id(user_id)
     all_stories_for_user = Story.query.filter(Story.user_id == user_id).all()
     delete_ratings_for_user(user_id)
+    delete_favorites_for_user(user_id)
     for story in all_stories_for_user:
         delete_story(story.story_id)
     db.session.delete(user)
     db.session.commit()
+
 
 def create_story(user_id, synopsis, title):
     """Creates a story."""
@@ -35,12 +37,13 @@ def delete_story(story_id):
 
     story = Story.query.get(story_id)
     delete_ratings_for_story(story.story_id)
+    delete_favorites_for_story(story_id)
     delete_branch_and_descendants(story.first_branch_id)
     db.session.delete(story)
     db.session.commit()
 
 
-def create_branch(story_id, prev_branch_id, description, body, branch_prompt, is_end, ordinal):
+def create_branch(story_id, prev_branch_id, description, body, branch_prompt, ordinal):
     """Creates a branch."""
 
     branch = Branch(story_id=story_id, 
@@ -48,7 +51,6 @@ def create_branch(story_id, prev_branch_id, description, body, branch_prompt, is
                     description=description,
                     body=body,
                     branch_prompt=branch_prompt,
-                    is_end=is_end,
                     ordinal=ordinal)
 
     return branch
@@ -91,13 +93,69 @@ def delete_ratings_for_story(story_id):
 
 
 def delete_ratings_for_user(user_id):
-    """Deletes ratings for a story."""
+    """Deletes ratings by a user."""
 
     all_ratings_for_user = Rating.query.filter(Rating.user_id == user_id).all()
 
     for rating in all_ratings_for_user:
         db.session.delete(rating)
         db.session.commit()
+
+
+def create_favorite(user_id, story_id):
+    """Creates a favorite."""
+    
+    favorite = Favorite(user_id=user_id, story_id=story_id)
+
+    return favorite
+
+
+def delete_favorite_with_id(favorite_id):
+    """Deletes a favorite."""
+    
+    favorite_to_delete = Favorite.query.filter(Favorite.favorite_id == favorite_id).first()
+
+    db.session.delete(favorite_to_delete)
+    db.session.commit()
+
+
+def get_favorite(user_id, story_id):
+    """Gets a favorite."""
+    
+    favorite = Favorite.query.filter(Favorite.user_id == user_id, Favorite.story_id == story_id).first()
+
+    return favorite
+
+
+def delete_favorite(user_id, story_id):
+    """Deletes a favorite."""
+    
+    favorite_to_delete = Favorite.query.filter(Favorite.user_id == user_id, Favorite.story_id == story_id).first()
+
+    db.session.delete(favorite_to_delete)
+    db.session.commit()
+
+
+def delete_favorites_for_user(user_id):
+    """Deletes a user's favorites."""
+
+    all_favorites_for_user = Favorite.query.filter(Favorite.user_id == user_id).all()
+
+    for favorite in all_favorites_for_user:
+        db.session.delete(favorite)
+        db.session.commit()
+
+
+def delete_favorites_for_story(story_id):
+    """Deletes favorites for a story."""
+
+    all_favorites_for_story = Favorite.query.filter(Favorite.story_id == story_id).all()
+
+    for favorite in all_favorites_for_story:
+        db.session.delete(favorite)
+        db.session.commit()
+
+
 
 
 def get_all_stories():
@@ -211,6 +269,14 @@ def get_ratings_for_story(story_id):
     
     else:
         return None    
+
+
+def get_rating(user_id, story_id):
+    """Gets a rating using user_id and story_id."""
+
+    rating = Rating.query.filter(Rating.user_id == user_id, Rating.story_id == story_id).first()
+
+    return rating
 
 
 def get_ordinal_for_next_branch(branch_id = 0):

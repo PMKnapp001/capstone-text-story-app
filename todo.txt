@@ -1,21 +1,20 @@
 TODO:
 
-    1. Enable automatic story stop in playstory if branch.is_end == True
-
-    2. Clean up files:
+    1. Clean up files:
         crud.py - condense or clear redundant or unused functions
         server.py - condense redundant routes and code in view functions
         macros.html - redo macro for forms to accomodate edit forms
         JS folder - condense or clear redundant or unused functions
+        All Files - Fix Docstrings and comments!!!
 
-    3. Review and compare create forms and edit forms to find if combining would be better implementation.
+    2. Review and compare create forms and edit forms to find if combining would be better implementation.
 
-    4. Code review to find where AJAX could be implemented.
+    3. Code review to find where AJAX could be implemented.
 
-    5. Test!
+    4. Test!
 
-    6. Style with Bootstrap
+    5. Style with Bootstrap
 
-    7. If time allows:
-        Implement Favorites feature
+    6. If time allows:
         Implement short story display format
+        Implement story save feature

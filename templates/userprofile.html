@@ -5,15 +5,15 @@
 <h1>{{ user.username }}</h1>
 <h2>{{ user.email }}</h2>
 
-<div id="user-ratings">
+<div id="user-favorites">
     <h3>
-        Ratings for other stories
+        Favorite Stories
     </h3>
 
-    {% for rating in user.ratings %}
+    {% for favorite in user.favorites %}
         <li>
-            <a href="/user/{{ rating.story.user_id }}/stories/{{ rating.story_id }}">
-                {{ rating.story.title }} Score: {{ rating.score }}
+            <a href="/user/{{ favorite.story.user_id }}/stories/{{ favorite.story_id }}">
+                {{ favorite.story.title }} || {{ user.username }}'s Score: {{ favorite.get_rating_score() }} || Average Score = {{ favorite.story.get_average_rating() }}
             </a>
         </li>
     {% endfor %}

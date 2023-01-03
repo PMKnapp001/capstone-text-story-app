@@ -4,14 +4,6 @@
 
         <label for="prompt">Enter the prompt for the next choice(if any): </label>
         <textarea name="prompt" id="prompt" value=""></textarea>
-
-        <label for="is-end">Does the story stop here?</label>
-
-        <input type="radio" name="is-end" value="false" id="no">
-        <label for="no">No</label>
-
-        <input type="radio" name="is-end" value="true" id="yes">
-        <label for="yes">Yes</label>
 {%- endmacro %}
 
 {%- macro show_branches(tree_branch) -%}

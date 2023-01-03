@@ -37,13 +37,6 @@
         <label for="prompt">Enter the prompt for the next choice(if any): </label>
         <textarea name="prompt" id="prompt">{{ branch.branch_prompt }}</textarea>
 
-        <label for="is-end">Does the story stop here?</label>
-
-        <input type="radio" name="is-end" value="false" id="no">
-        <label for="no">No</label>
-
-        <input type="radio" name="is-end" value="true" id="yes">
-        <label for="yes">Yes</label>
         <input type="submit" id="branch-submit" value="Submit Branch">
     </form>
     {% endif %}
@@ -56,14 +49,6 @@
 
         <label for="prompt">Enter the prompt for the next choice(if any): </label>
         <textarea name="prompt" id="prompt" value="">{{ branch.branch_prompt }}</textarea>
-
-        <label for="is-end">Does the story stop here?</label>
-
-        <input type="radio" name="is-end" value="false" id="no">
-        <label for="no">No</label>
-
-        <input type="radio" name="is-end" value="true" id="yes">
-        <label for="yes">Yes</label>
 
         <input type="submit" id="branch-submit" value="Submit Branch">
     </form>

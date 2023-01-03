@@ -138,9 +138,14 @@ def view_story(user_id, story_id):
         
     else:
         intro = ""
+
     all_branches = story.branches
 
-    return render_template('playstory.html', user=user,story=story,intro=intro,all_branches=all_branches)
+    favorite = crud.get_favorite(user_id = session['user_id'], story_id = story_id)
+
+    rating = crud.get_rating(user_id = session['user_id'], story_id = story_id)
+
+    return render_template('playstory.html', user=user,story=story,intro=intro,all_branches=all_branches, favorite=favorite, rating=rating)
 
 
 @app.route('/api/branch')
@@ -149,10 +154,14 @@ def get_branch():
 
     branch = crud.get_branch_by_id(clicked_branch_id)
 
+    if branch.get_next_branches():
+        branch_prompt = branch.branch_prompt
+    else:
+        branch_prompt = "Fin."
+
     branch_json = jsonify({'branch_id':branch.branch_id,
                     'body':branch.body,
-                    'branch_prompt':branch.branch_prompt,
-                    'is_end':branch.is_end
+                    'branch_prompt':branch_prompt
                     })
     
     return branch_json
@@ -188,6 +197,34 @@ def get_results():
     return results_json
 
 
+@app.route('/favorites/<story_id>/add')
+def add_favorite(story_id):
+
+    favorite = crud.create_favorite(user_id = session['user_id'], story_id = story_id)
+
+    db.session.add(favorite)
+    db.session.commit()
+
+    story = crud.get_story_by_id(story_id)
+    
+    flash(f"{story.title} successfully added to favorites.")
+
+    return redirect(f'/user/{story.user_id}/stories/{story_id}')
+
+
+@app.route('/favorites/<story_id>/remove')
+def remove_favorite(story_id):
+
+    crud.delete_favorite(user_id = session['user_id'], story_id = story_id)
+    
+    story = crud.get_story_by_id(story_id)
+
+    flash(f"{story.title} successfully removed from favorites.")
+
+    return redirect(f'/user/{story.user_id}/stories/{story_id}')
+
+
+
 @app.route('/stories/new')
 def new_story():
 
@@ -201,11 +238,16 @@ def new_story():
 @app.route('/stories/<story_id>/ratings/new', methods=["POST"])
 def add_rating(story_id):
 
-    story = crud.get_story_by_id(story_id)
     user_id = session['user_id']
+    rating = crud.get_rating(user_id = session['user_id'], story_id = story_id)
+    story = crud.get_story_by_id(story_id)
     score = request.form.get('rating')
 
-    rating = crud.create_rating(score=score, user_id=user_id, story_id=story.story_id)
+    if rating:
+        rating.score = score
+
+    else:
+        rating = crud.create_rating(score=score, user_id=user_id, story_id=story.story_id)
 
     db.session.add(rating)
     db.session.commit()
@@ -272,25 +314,18 @@ def add_branch(story_id):
     story = crud.get_story_by_id(story_id)
 
     if not session['intro_branch_id']:
-        prev_branch = None
+        prev_branch_id = None
         story_id = story.story_id
         description = "Intro Branch, no description"
         body = request.form.get('body')
         branch_prompt = request.form.get('prompt')
-        is_end = request.form.get('is-end')
         ordinal = 0
 
-        if is_end == "true":
-            is_end = True
-        else:
-            is_end = False
-
         branch = crud.create_branch(story_id=story_id, 
-                                        prev_branch_id = prev_branch, 
+                                        prev_branch_id = prev_branch_id, 
                                         description = description, 
                                         body = body,
                                         branch_prompt = branch_prompt,
-                                        is_end=is_end,
                                         ordinal=ordinal)
 
         db.session.add(branch)
@@ -309,26 +344,19 @@ def add_branch(story_id):
         session['previous_branch_id'] = branch_id
 
     else:
-        prev_branch = session['previous_branch_id']
+        prev_branch_id = session['previous_branch_id']
         story_id = story.story_id
         description = request.form.get('description')
         body = request.form.get('body')
         branch_prompt = request.form.get('prompt')
-        is_end = request.form.get('is-end')
         next= request.form.get('next')
-        ordinal = 0
-
-        if is_end == "true":
-            is_end = True
-        else:
-            is_end = False
+        ordinal = crud.get_ordinal_for_next_branch(prev_branch_id)
 
         branch = crud.create_branch(story_id=story_id, 
-                                        prev_branch_id = prev_branch, 
+                                        prev_branch_id = prev_branch_id, 
                                         description = description, 
                                         body = body,
                                         branch_prompt = branch_prompt,
-                                        is_end=is_end,
                                         ordinal=ordinal)
 
         db.session.add(branch)
@@ -432,12 +460,6 @@ def edit_branch(story_id, branch_id):
 
     branch.body = request.form.get('body')
     branch.branch_prompt = request.form.get('prompt')
-    is_end = request.form.get('is-end')
-    if is_end == "true":
-        is_end = True
-    else:
-        is_end = False
-    branch.is_end = is_end
 
     db.session.add(branch)
     db.session.commit()
