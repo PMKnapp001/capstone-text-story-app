@@ -1,6 +1,6 @@
 """Create, Read, Update, Delete Operations for Capstone Text Story App"""
 
-from model import db, User, Story, Branch, Rating, Favorite, connect_to_db
+from model import db, User, Story, Branch, Rating, Favorite, Bookmark, connect_to_db
 
 
 def create_user(username, password, email):
@@ -17,6 +17,7 @@ def delete_user(user_id):
     user = get_user_by_id(user_id)
     all_stories_for_user = Story.query.filter(Story.user_id == user_id).all()
     delete_ratings_for_user(user_id)
+    delete_bookmarks_for_user(user_id)
     delete_favorites_for_user(user_id)
     for story in all_stories_for_user:
         delete_story(story.story_id)
@@ -36,7 +37,8 @@ def delete_story(story_id):
     """Deletes ratings, branches for story and then deletes story."""    
 
     story = Story.query.get(story_id)
-    delete_ratings_for_story(story.story_id)
+    delete_ratings_for_story(story_id)
+    delete_bookmarks_for_story(story_id)
     delete_favorites_for_story(story_id)
     delete_branch_and_descendants(story.first_branch_id)
     db.session.delete(story)
@@ -67,6 +69,7 @@ def delete_branch_and_descendants(branch_id):
         db.session.commit()
 
     for child in branch.get_next_branches():
+        delete_bookmarks_for_branch(child.branch_id)
         delete_branch_and_descendants(child.branch_id)
         db.session.delete(child)
         db.session.commit()
@@ -100,6 +103,18 @@ def delete_ratings_for_user(user_id):
     for rating in all_ratings_for_user:
         db.session.delete(rating)
         db.session.commit()
+
+
+def get_top_ten_popular_stories():
+    """Returns list of top ten popular stories descending."""
+
+    top_ten_popular_stories = db.session.query(
+                                                Rating.story_id, db.func.count(Rating.story_id)
+                                                ).group_by('story_id').order_by(
+                                                db.desc(db.func.count(Rating.story_id))
+                                                ).limit(10).all()
+
+    return top_ten_popular_stories
 
 
 def create_favorite(user_id, story_id):
@@ -156,6 +171,59 @@ def delete_favorites_for_story(story_id):
         db.session.commit()
 
 
+def create_bookmark(user_id, story_id, branch_id, is_fin):
+    """Creates a bookmark for a story."""
+
+    bookmark = Bookmark(user_id=user_id, story_id=story_id, branch_id=branch_id, is_fin=is_fin)
+
+    return bookmark
+
+
+def delete_bookmark(user_id, story_id):
+    """Deletes a bookmark."""
+    
+    bookmark_to_delete = Bookmark.query.filter(Bookmark.user_id == user_id, Bookmark.story_id == story_id).first()
+
+    db.session.delete(bookmark_to_delete)
+    db.session.commit()
+
+
+def delete_bookmarks_for_user(user_id):
+    """Deletes a user's bookmarks."""
+
+    all_bookmarks_for_user = Bookmark.query.filter(Bookmark.user_id == user_id).all()
+
+    for bookmark in all_bookmarks_for_user:
+        db.session.delete(bookmark)
+        db.session.commit()
+
+
+def delete_bookmarks_for_story(story_id):
+    """Deletes bookmarks for a story."""
+
+    all_bookmarks_for_story = Bookmark.query.filter(Bookmark.story_id == story_id).all()
+
+    for bookmark in all_bookmarks_for_story:
+        db.session.delete(bookmark)
+        db.session.commit()
+
+
+def delete_bookmarks_for_branch(branch_id):
+    """Deletes bookmarks for a branch."""
+
+    all_bookmarks_for_branch = Bookmark.query.filter(Bookmark.branch_id == branch_id).all()
+
+    for bookmark in all_bookmarks_for_branch:
+        db.session.delete(bookmark)
+        db.session.commit()
+
+
+def get_bookmark_for_story(user_id, story_id):
+    """Gets a user's bookmark for a story."""
+
+    bookmark = Bookmark.query.filter(Bookmark.user_id == user_id, Bookmark.story_id == story_id).first()
+
+    return bookmark
 
 
 def get_all_stories():

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Story App Create Story{% endblock %}
+
+{% block body %}
+    <div id="top-ten-popular">
+        <h3>Top Ten Popular Stories</h3>
+        <ol>
+            {% for story in stories %}
+            <li>
+                <a href="/user/{{ story[0].user_id }}/stories/{{ story[0].story_id }}">
+                    {{ story[0].title }} || Total Ratings: {{ story[1] }} || Average Rating: {{ story[2] }}
+                </a>
+            </li>
+            {% endfor %}
+        </ol>
+    </div>
+{% endblock %}

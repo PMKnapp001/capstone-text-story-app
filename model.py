@@ -1,6 +1,7 @@
 """Models for Interactive Text Story App"""
 
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import desc
 
 db = SQLAlchemy()
 
@@ -20,6 +21,7 @@ class User(db.Model):
     stories = db.relationship("Story", back_populates="user")
     ratings = db.relationship("Rating", back_populates="user")
     favorites = db.relationship("Favorite", back_populates="user")
+    bookmarks = db.relationship("Bookmark", back_populates="user")
 
 
     def __repr__(self):
@@ -50,6 +52,7 @@ class Story(db.Model):
     branches = db.relationship("Branch", back_populates="story")
     ratings = db.relationship("Rating", back_populates="story")
     favorites = db.relationship("Favorite", back_populates="story")
+    bookmarks = db.relationship("Bookmark", back_populates="story")
     
     
     # story methods
@@ -113,6 +116,7 @@ class Branch(db.Model):
 
     # Relationships for primary keys and foreign keys
     story = db.relationship("Story", back_populates="branches")
+    bookmarks = db.relationship("Bookmark", back_populates="branch")
     # prev_branch = db.relationship("Branch", back_populates="branch_options")
     # branch_options = db.relationship("Branch", back_populates="prev_branch")
     # story_intro = db.relationship("Story", back_populates="first_branch")
@@ -199,6 +203,52 @@ class Favorite(db.Model):
             score = rating.score
 
         return score
+
+
+class Bookmark(db.Model):
+    """Bookmark class."""
+
+    __tablename__ = "bookmarks"
+
+    # SQLAlchemy instructions to create table
+    bookmark_id = db.Column(db.Integer, autoincrement= True, primary_key= True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+    story_id = db.Column(db.Integer, db.ForeignKey('stories.story_id'))
+    branch_id = db.Column(db.Integer, db.ForeignKey('branches.branch_id'))
+    is_fin = db.Column(db.Boolean, default=False)
+
+    # Relationships for primary keys and foreign keys
+    user = db.relationship("User", back_populates="bookmarks")
+    story = db.relationship("Story", back_populates="bookmarks")
+    branch = db.relationship("Branch", back_populates="bookmarks")
+
+
+    def __repr__(self):
+        """Displays info from bookmark class."""
+        
+        return f"<Bookmark bookmark_id={self.bookmark_id} user_id={self.user_id} story_id={self.story_id}>"
+
+
+    def story_so_far(self):
+        """Returns list of body texts from previous branches."""
+
+        story_so_far = []
+        intro_branch_id = self.story.first_branch_id
+        current_branch_id = self.branch_id
+        bookmarked_branch = Branch.query.filter(Branch.branch_id == current_branch_id).first()
+
+        if not bookmarked_branch.get_next_branches():
+            story_so_far.append("Fin.")
+
+        while current_branch_id != intro_branch_id:
+            current_branch = Branch.query.filter(Branch.branch_id == current_branch_id).first()
+            story_so_far.append(current_branch.body)
+            current_branch_id = current_branch.prev_branch_id
+
+        story_so_far.reverse()
+
+        return story_so_far
+
 
 
 def connect_to_db(flask_app, db_uri="postgresql:///text-story-app", echo=True):

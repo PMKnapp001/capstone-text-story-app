@@ -133,6 +133,7 @@ def view_story(user_id, story_id):
 
     intro_id = story.first_branch_id
     session['intro_branch_id'] = intro_id
+    
     if intro_id:
         intro = crud.get_branch_by_id(intro_id)
         
@@ -145,7 +146,26 @@ def view_story(user_id, story_id):
 
     rating = crud.get_rating(user_id = session['user_id'], story_id = story_id)
 
-    return render_template('playstory.html', user=user,story=story,intro=intro,all_branches=all_branches, favorite=favorite, rating=rating)
+    bookmark = crud.get_bookmark_for_story(session['user_id'], story_id)
+    
+    if bookmark:
+        bookmarked_story = bookmark.story_so_far()
+    else:
+        bookmarked_story = None
+
+    return render_template('playstory.html', user=user,story=story, bookmark=bookmark,intro=intro,all_branches=all_branches, favorite=favorite, rating=rating, bookmarked_story=bookmarked_story)
+
+
+@app.route('/user/<user_id>/stories/<story_id>/bookmark/delete')
+def delete_bookmark(user_id, story_id):
+    
+    crud.delete_bookmark(user_id, story_id)
+
+    story = crud.get_story_by_id(story_id)
+
+    user_id = story.user_id
+
+    return redirect(f'/user/{user_id}/stories/{story_id}')
 
 
 @app.route('/api/branch')
@@ -153,6 +173,25 @@ def get_branch():
     clicked_branch_id = int(request.args.get('branch_id'))
 
     branch = crud.get_branch_by_id(clicked_branch_id)
+
+    if session['user_id'] != branch.story.user_id:
+
+        if not branch.get_next_branches():
+            is_fin = True
+        else:
+            is_fin = False
+
+        bookmark = crud.get_bookmark_for_story(session['user_id'], branch.story_id)
+
+        if bookmark:
+            bookmark.branch_id = clicked_branch_id
+            bookmark.is_fin = is_fin
+            
+        else:
+            bookmark = crud.create_bookmark(session['user_id'], branch.story_id, clicked_branch_id, is_fin)
+
+        db.session.add(bookmark)
+        db.session.commit()
 
     if branch.get_next_branches():
         branch_prompt = branch.branch_prompt
@@ -223,6 +262,19 @@ def remove_favorite(story_id):
 
     return redirect(f'/user/{story.user_id}/stories/{story_id}')
 
+
+@app.route('/stories/popular')
+def get_popular_stories():
+
+    top_ten_popular = crud.get_top_ten_popular_stories()
+    stories = []
+    for rating in top_ten_popular:
+        story = crud.get_story_by_id(rating.story_id)
+        avg_rating = story.get_average_rating()
+        stories.append([story, rating[1], avg_rating])
+    
+    return render_template('popular.html', stories=stories)
+    
 
 
 @app.route('/stories/new')

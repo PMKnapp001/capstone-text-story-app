@@ -11,7 +11,6 @@
 </h3>
 
 {% if intro %}    
-    <button id="ghost-button-branch-id" value="{{ intro.branch_id }}" style="display: none"></button>
 
     {% if user.user_id != session['user_id'] %}
         <span>
@@ -45,6 +44,13 @@
                     <button id="favorite-remove">Remove Favorite</button>
                 </a>
             {% endif %}
+
+            {% if bookmark %}
+                <a href="/user/{{ session['user_id'] }}/stories/{{ story.story_id }}/bookmark/delete">
+                    <button id="bookmark-remove">Start From Beginning</button>
+                </a>
+            {% endif %}
+
         </span>
     {% endif %}
 
@@ -66,6 +72,19 @@
         Prompt: {{ intro.branch_prompt }}
     </div>
 
+    {% if bookmark %}
+        <button id="ghost-button-branch-id" value="{{ bookmark.branch_id }}" style="display: none"></button>
+
+        <div id="bookmark-div">
+            {% for page in bookmarked_story %}
+                <div class="branch-body">{{ page }}</div>   
+            {% endfor %}
+        </div>
+    {%  endif %}
+    
+    {% if not bookmark %}
+        <button id="ghost-button-branch-id" value="{{ intro.branch_id }}" style="display: none"></button>
+    {% endif %}
 
     <div id="buttons-div" >
         {% for branch in all_branches[1:] %}

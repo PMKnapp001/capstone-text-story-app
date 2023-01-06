@@ -5,6 +5,34 @@
 <h1>{{ user.username }}</h1>
 <h2>{{ user.email }}</h2>
 
+{% if session['user_id'] == user.user_id %}
+    <div id="bookmarked-stories">
+        <h3>Pickup Where You Left Off</h3>
+        {% for bookmarked_story in user.bookmarks %}
+            {% if not bookmarked_story.is_fin %}
+            <li>
+                <a href="/user/{{ bookmarked_story.story.user_id }}/stories/{{ bookmarked_story.story_id }}">
+                    {{ bookmarked_story.story.title }}
+                </a>
+            </li>
+            {%  endif %}
+        {% endfor %}
+    </div>
+
+    <div id="playthroughs">
+        <h3>Completed Playthroughs</h3>
+        {% for bookmarked_story in user.bookmarks %}
+            {% if bookmarked_story.is_fin %}
+            <li>
+                <a href="/user/{{ bookmarked_story.story.user_id }}/stories/{{ bookmarked_story.story_id }}">
+                    {{ bookmarked_story.story.title }}
+                </a>
+            </li>
+            {%  endif %}
+        {% endfor %}
+    </div>
+{% endif %}
+
 <div id="user-favorites">
     <h3>
         Favorite Stories
