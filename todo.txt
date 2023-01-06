@@ -17,4 +17,3 @@ TODO:
 
     6. If time allows:
         Implement short story display format
-        Implement story save feature
