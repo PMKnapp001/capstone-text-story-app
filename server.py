@@ -12,11 +12,15 @@ def homepage():
     """Route to homepage for web app. Redirects to
     login if no user_id in session."""
 
-    if not session.get('user_id'):
+    user_id = session.get('user_id')
+
+    if not user_id:
         return redirect('/users')
 
     else:    
-        return render_template('homepage.html')
+        user = crud.get_user_by_id(user_id)
+
+        return render_template('userprofile.html', user=user)
 
 
 @app.route('/search')
@@ -99,6 +103,21 @@ def login_user():
         flash(f"No account with username {username} exists.")
 
         return redirect("/users")
+
+
+@app.route('/users/delete')
+def delete_user():
+    """Route deletes user, including and all associated stories,
+    ratings, bookmarks, etc., that is currently logged in."""
+
+    crud.delete_user(session['user_id'])
+    session['user_id'] = ""
+    session['story_id'] = []
+    session['intro_branch_id'] = []
+    session['previous_branch_id'] = []
+    flash("Account Deleted.")
+
+    return redirect("/")
 
 
 @app.route('/users/<user_id>/profile')
