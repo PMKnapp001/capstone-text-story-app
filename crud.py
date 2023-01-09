@@ -259,6 +259,7 @@ def get_branch_by_id(branch_id):
 
 
 def get_all_branches_from_story_id(story_id):
+    """Returns all branches for a story."""
 
     all_branches = Branch.query.filter(Branch.story_id==story_id).all()
 
@@ -352,8 +353,10 @@ def get_ordinal_for_next_branch(branch_id = 0):
 
     all_sub_branches = Branch.query.filter(Branch.prev_branch_id == branch_id).all()
     ordinal = 1
+
     for branch in all_sub_branches:
         ordinal +=1
+
     return ordinal
 
 
@@ -366,9 +369,8 @@ def search_user_or_story(user_or_story, search_for):
     else:
         results = Story.query.filter(Story.title.like(f'%{search_for}%')).all()
 
-    print(f"RESULTS FROM SEARCH ==> {results}!!!")
-
     return results
+
 
 
 if __name__ == '__main__':

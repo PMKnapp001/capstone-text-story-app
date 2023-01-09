@@ -176,18 +176,6 @@ model.db.session.add(rating2)
 
 model.db.session.commit()
 
-
-# score = randint(1,5)
-# rating1 = crud.create_rating(score, 2, test_story1.story_id)
-# score = randint(1,5)
-# rating2 = crud.create_rating(score, 2, test_story3.story_id)
-
-# model.db.session.add(rating1)
-# model.db.session.add(rating2)
-
-# model.db.session.commit()
-
-
 score = randint(1,5)
 rating1 = crud.create_rating(score, 3, test_story1.story_id)
 score = randint(1,5)

@@ -40,15 +40,10 @@ class Story(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable = False)
     synopsis = db.Column(db.Text, nullable = False)
     title = db.Column(db.Text, nullable = False)
-    # first_branch_id = db.Column(db.Integer, db.ForeignKey('branches.branch_id'), nullable = False)
     first_branch_id = db.Column(db.Integer)
-
-    # Mapped Column
-
 
     # Relationships for primary keys and foreign keys
     user = db.relationship("User", back_populates="stories")
-    # first_branch = db.relationship("Branch", back_populates="story_intro", foreign_keys=[first_branch_id])
     branches = db.relationship("Branch", back_populates="story")
     ratings = db.relationship("Rating", back_populates="story")
     favorites = db.relationship("Favorite", back_populates="story")
@@ -84,6 +79,7 @@ class Story(db.Model):
                 for rating in all_ratings:
                     total_score += rating.score
                     count += 1
+
                 average_score = total_score/count
         
                 return average_score
@@ -93,8 +89,6 @@ class Story(db.Model):
         """Returns dictionary of branch ids with current id as key 
         and child branch id as empty dictionarys or or value if that
         branch does not have children."""
-
-        # {branch_id:1, children: [...], branch_desc: blahblah}
 
         return self.get_intro_branch().make_story_tree()
 
@@ -107,7 +101,6 @@ class Branch(db.Model):
     # SQLAlchemy instructions to create table
     branch_id = db.Column(db.Integer, autoincrement= True, primary_key= True)
     story_id = db.Column(db.Integer, db.ForeignKey('stories.story_id'), nullable = False)
-    # prev_branch_id = db.Column(db.Integer, db.ForeignKey('branches.branch_id'), nullable = False, default = 0)
     prev_branch_id = db.Column(db.Integer)
     description = db.Column(db.Text, nullable = False)
     body = db.Column(db.Text, nullable = False)
@@ -117,9 +110,6 @@ class Branch(db.Model):
     # Relationships for primary keys and foreign keys
     story = db.relationship("Story", back_populates="branches")
     bookmarks = db.relationship("Bookmark", back_populates="branch")
-    # prev_branch = db.relationship("Branch", back_populates="branch_options")
-    # branch_options = db.relationship("Branch", back_populates="prev_branch")
-    # story_intro = db.relationship("Story", back_populates="first_branch")
 
 
     def __repr__(self):
@@ -133,18 +123,20 @@ class Branch(db.Model):
 
         return Branch.query.filter(Branch.prev_branch_id == self.branch_id).order_by(Branch.ordinal).all()
 
+
     def make_story_tree(self):
         """Returns dictionary of branch ids with current id as key 
         and child branch id as empty dictionarys or or value if that
         branch does not have children."""
 
-        # {branch_id:1, children: [...], branch_desc: blahblah}
-
         children_branches=[]
         next_branches = self.get_next_branches()
+
         for branch in next_branches:
             children_branches.append(branch.make_story_tree())
+
         branch_tree={"branch_id":self.branch_id, "children":children_branches, "branch_desc":self.description}
+
         return branch_tree
 
 
@@ -184,6 +176,7 @@ class Favorite(db.Model):
     # Relationships for primary keys and foreign keys
     user = db.relationship("User", back_populates="favorites")
     story = db.relationship("Story", back_populates="favorites")
+
 
     def __repr__(self):
         """Displays info from favorite class."""

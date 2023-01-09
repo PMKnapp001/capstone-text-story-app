@@ -3,7 +3,9 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
-    <link href="/static/style/style.css" rel="stylesheet">
+
+    <link href="/static/style/bootstrap-5.3.0-alpha1-dist/css/bootstrap.css" rel ="stylesheet" type="text/css">
+    <link href="/static/style/style.css" rel="stylesheet" type="text/css">
     <title>
       {% block title %}{% endblock %}
     </title>
@@ -28,7 +30,7 @@
     {% block body %} {% endblock %}
 
     {% block after_body %}{% endblock %}
-    <script src="/static/js/story.js"></script>
-    <!-- <script src="/static/js/createStory.js"></script> -->
+    
+    <script src="/static/js/bootstrap-5.3.0-alpha1-dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
