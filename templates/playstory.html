@@ -2,103 +2,139 @@
 {% block title %}Play Story{% endblock %}
 
 {% block body %}
-<a href="/user/{{ session['user_id'] }}/stories"><button>Go To Stories</button></a>
-<h1>{{ story.title }}</h1>
-<h2>By {{ user.username }}
+<div class="container-fluid row first-container play-background border-dark border-top border-bottom border-5">
+    <div id="title-card" class="row" >
+      <div class="col-6 offset-3 gy-3 text-center position-fixed border border-dark rounded group-title-background">
+        <h1 id="title" class="text-decoration-underline">{{ story.title }}</h1>
+        <h3 id="author">By {{ user.username }}</h3>
+      </div>
+    </div>
 
-<h3>
-  Synopsis: {{ story.synopsis }}
-</h3>
-
-{% if intro %}    
-
-    {% if user.user_id != session['user_id'] %}
-        <span>
-            {% if not rating %}
-                <strong>Rate this Story(1-5):</strong>
-            <br>
-                <form action="/stories/{{ story.story_id }}/ratings/new" method="POST">
-                    <input type="number" name ='rating' min="1" max="5" value="1">
-            <br>
-                    <input type="submit" value="Submit Rating"></input>
-                </form>
+    <div class="row">
+        <div class="col-3 position-fixed">
+            {% if user.user_id == session['user_id'] %}
+                <div class="dropdown-center col-4 offset-4 gy-3 text-center">
+                    <button class="btn btn-secondary dropdown-toggle border-dark" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Story Options
+                    </button>
+                    <ul class="dropdown-menu">
+                        <a class="dropdown-item" href="/user/{{ user.user_id }}/stories/{{ story.story_id }}">
+                            Play
+                        </a>
+                        <a class="dropdown-item" href="/stories/{{ story.story_id }}/edit">
+                        Edit Story
+                        </a>
+                        {% if session['intro_branch_id'] %}
+                        <a class="dropdown-item" href="/stories/{{ story.story_id }}/branches">
+                            Edit Branches
+                        </a>
+                        {% endif %} 
+                        <a class="dropdown-item" href="/stories/{{ story.story_id }}/delete">
+                        Delete Story
+                        </a>
+                    </ul>
+                </div>
             {% endif %}
+        </div>
 
-            {% if rating %}
-                <strong>Current Rating:</strong>
-                <form action="/stories/{{ story.story_id }}/ratings/new" method="POST">
-                    <input type="number" name ='rating' min="1" max="5" value="{{ rating.score }}">
-            <br>
-                    <input type="submit" value="Edit Rating"></input>
-                </form>
+        <div class="col-6 offset-3 play-story border border-dark story-item-background">
+            {% if intro %}  
+                <div id="intro-branch" class="first-line">
+                    {{ intro.body }}
+                </div>
+            
+                <div class="first-line">
+                    {{ intro.branch_prompt }}
+                </div>
+            
+                {% if bookmark %}
+                    <button id="ghost-button-branch-id" value="{{ bookmark.branch_id }}" style="display: none"></button>
+            
+                    <div id="bookmark-div">
+                        {% for page in bookmarked_story %}
+                            <div class="branch-body first-line">{{ page }}</div>   
+                        {% endfor %}
+                    </div>
+                {%  endif %}
+                
+                {% if not bookmark %}
+                    <button id="ghost-button-branch-id" value="{{ intro.branch_id }}" style="display: none"></button>
+                {% endif %}
+            
+                <div id="buttons-div" >
+                    {% for branch in all_branches[1:] %}
+                    <ul class="branch-prev" id="{{ branch.prev_branch_id }}">
+                        
+                        <li><button value="{{ branch.branch_id }}" class="branch-choice">{{ branch.description }}</a></li>
+                        
+                    </ul>
+                    {% endfor %}
+                </div>
             {% endif %}
         
-            {% if not favorite %}
-                <a href="/favorites/{{ story.story_id }}/add">
-                    <button id="favorite-add">Add Favorite</button>
-                </a>
+            {% if not intro %}
+                <h3>Story in development... Check back soon!</h3>
             {% endif %}
-
-            {% if favorite %}
-                <a href="/favorites/{{ story.story_id }}/remove">
-                    <button id="favorite-remove">Remove Favorite</button>
-                </a>
-            {% endif %}
-
-            {% if bookmark %}
-                <a href="/user/{{ session['user_id'] }}/stories/{{ story.story_id }}/bookmark/delete">
-                    <button id="bookmark-remove">Start From Beginning</button>
-                </a>
-            {% endif %}
-
-        </span>
-    {% endif %}
-
-    {% if user.user_id == session['user_id'] %}
-        <span>
-            <a href="/stories/{{ story.story_id }}/edit"><button>Edit Story</button></a>
-
-            <a href="/stories/{{ story.story_id }}/branches">
-                <button id="branch-overview">View Branches</button>
-            </a>
-        </span>
-    {% endif %}
-
-    <div id="intro-branch">
-        Intro: {{ intro.body }}
-    </div>
-
-    <div>
-        Prompt: {{ intro.branch_prompt }}
-    </div>
-
-    {% if bookmark %}
-        <button id="ghost-button-branch-id" value="{{ bookmark.branch_id }}" style="display: none"></button>
-
-        <div id="bookmark-div">
-            {% for page in bookmarked_story %}
-                <div class="branch-body">{{ page }}</div>   
-            {% endfor %}
         </div>
-    {%  endif %}
-    
-    {% if not bookmark %}
-        <button id="ghost-button-branch-id" value="{{ intro.branch_id }}" style="display: none"></button>
-    {% endif %}
 
-    <div id="buttons-div" >
-        {% for branch in all_branches[1:] %}
-        <ul class="branch-prev" id="{{ branch.prev_branch_id }}">
+        <div class="col-3 offset-9 position-fixed">
+            {% if user.user_id != session['user_id'] %}
+                <div class="dropdown-center col-4 offset-4 gy-3 text-center">
+                    <button class="btn btn-secondary dropdown-toggle border-dark" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Story Options
+                    </button>
+                    <ul class="dropdown-menu">
+                        {% if not rating %}
+                            <form class="rating-form" action="/stories/{{ story.story_id }}/ratings/new" method="POST">
+                                <label for="rating" class="form-label">Rate this Story:</label>
+                                <div class="mb-3">
+                                    <input type="number" class="form-control" name ='rating' min="1" max="5" value="1">
+                                </div>
+                                <div class="text-center gy-3">
+                                    <input type="submit" value="Submit Rating"></input>
+                                </div>
+                            </form> 
+                            <li><hr class="dropdown-divider"></li>
+        
+                        {% endif %}
+
+                        {% if rating %}
+                            <form class="rating-form" action="/stories/{{ story.story_id }}/ratings/new" method="POST">
+                                <label for="rating" class="form-label">Current Rating:</label>
+                                <div class="mb-3">
+                                    <input type="number" class="form-control" name ='rating' min="1" max="5" value="{{ rating.score }}">
+                                </div>
+                                <div class="text-center gy-3">
+                                    <input type="submit" value="Edit Rating"></input>
+                                </div>
+                            </form>
+                            <li><hr class="dropdown-divider"></li>
+                        {% endif %}
+
+                        {% if not favorite %}
+                            <a class="dropdown-item" id="favorite-add" href="/favorites/{{ story.story_id }}/add">
+                                Add Favorite
+                            </a>
+                        {% endif %}
             
-            <li><button value="{{ branch.branch_id }}" class="branch-choice">{{ branch.description }}</a></li>
-            
-        </ul>
-        {% endfor %}
+                        {% if favorite %}
+                            <a class="dropdown-item" id="favorite-remove" href="/favorites/{{ story.story_id }}/remove">
+                                Remove Favorite
+                            </a>
+                        {% endif %}
+
+                        {% if bookmark %}
+                            <a class="dropdown-item" id="bookmark-remove" href="/user/{{ session['user_id'] }}/stories/{{ story.story_id }}/bookmark/delete">
+                                Start From Beginning
+                            </a>
+                        {% endif %}
+                    </ul>
+                </div>
+            {% endif %}
+        </div>
     </div>
-{% endif %}
-
-{% if not intro %}
-    <h3>Story in development... Check back soon!</h3>
-{% endif %}
+    
+</div>
+    
     <script src="/static/js/story.js"></script>
 {% endblock %}

@@ -2,8 +2,46 @@
 {% block title %}Story App Add Branch{% endblock %}
 
 {% block body %}
+<div class="container-fluid row first-container tree-background border-dark border-top border-bottom border-5">
+    <div id="title-card" class="row">
+        <div class="col-6 offset-3 gy-3 text-center position-fixed border border-dark rounded group-title-background">
+          <h1 id="title" class="text-decoration-underline">{{ story.title }}</h1>
+          <h3 id="synopsis">{{ story.synopsis }}</h3>
+        </div>
+    </div>
 
-{{ jin_macs.show_branches(story_tree) }}
+    <div class="row mb-5">
+      <div class="col-4 position-fixed">
+        <div class="row">
+            <div class="dropdown-center col-4 offset-4 gy-3 text-center">
+              <button class="btn btn-secondary dropdown-toggle border-dark" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Story Options
+              </button>
+              <ul class="dropdown-menu">
+                <a class="dropdown-item" href="/user/{{ story.user_id }}/stories/{{ story.story_id }}">
+                  Play
+                </a>
+                <a class="dropdown-item" href="/stories/{{ story.story_id }}/edit">
+                  Edit Story
+                </a>
+                {% if session['intro_branch_id'] %}
+                  <a class="dropdown-item" href="/stories/{{ story.story_id }}/branches">
+                    Edit Branches
+                  </a>
+                {% endif %} 
+                <a class="dropdown-item" href="/stories/{{ story.story_id }}/delete">
+                  Delete Story
+                </a>
+              </ul>
+            </div>
+        </div>
+      </div>
+
+      <div class="col-4 story-item-background border-dark border offset-4 my-5 gy-3">
+        {{ jin_macs.show_branches(story_tree) }}
+    </div>
+    </div>
+</div>
 
 {% endblock %}
 

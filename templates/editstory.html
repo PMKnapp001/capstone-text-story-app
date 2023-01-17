@@ -2,27 +2,64 @@
 {% block title %}Story App Edit Story{% endblock %}
 
 {% block body %}
-<a href="/user/{{ session['user_id'] }}/stories"><button>Go To Stories</button></a>
-<div id="edit-story-form">
-  <form action="/stories/{{ story.story_id }}/edit" method="POST">
-    <label for="title">Story Title:</label>
-    <input type="text" name="title" id="edit-title" value="{{ story.title }}">
+<div class="container-fluid ">
+  <div class="row first-container writing-background border-dark border-top border-bottom border-5">
 
-    <label for="synopsis">Story Synopsis:</label>
-    <textarea name="synopsis" id="edit-synopsis">{{ story.synopsis }}</textarea>
+    <div class="dropdown col-4 gy-3 text-center">
+      <button class="btn btn-secondary dropdown-toggle my-5 border-dark" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Story Options
+      </button>
+      <ul class="dropdown-menu">
+        <a class="dropdown-item" href="/user/{{ story.user_id }}/stories/{{ story.story_id }}">
+          Play
+        </a>
+        {% if not session['intro_branch_id'] %}
+          <a class="dropdown-item" href="/stories/{{ story.story_id }}/branches/new">
+            Create Intro Branch
+          </a>
+        {% endif %}
+        {% if session['intro_branch_id'] %}
+          <a class="dropdown-item" href="/stories/{{ story.story_id }}/branches">
+            Edit Branches
+          </a>
+        {% endif %} 
+        <a class="dropdown-item" href="/stories/{{ story.story_id }}/delete">
+          Delete Story
+        </a>
+      </ul>
+    </div>
 
-    <input type="submit" id="story-submit" value="Submit!">
-  </form>
+    <div class="col-4 border border-dark border-5 py-2 story-item-background my-5">
+      <div id="edit-story-form">
+        <form action="/stories/{{ story.story_id }}/edit" method="POST">
+          <div class="mb-3">
+            <label for="title" class="form-label">Story Title:</label>
+            <input type="text" name="title" id="edit-title" class="form-control" value="{{ story.title }}">
+            <div class="form-text">
+              Enter the title of your story. Can be edited later.
+            </div>
+          </div>
+
+          <div class="mb-5">
+            <label for="synopsis" class="form-label">Story Synopsis:</label>
+            <textarea name="synopsis" id="edit-synopsis" class="form-control" rows="5" cols="40">{{ story.synopsis }}</textarea>
+            <div class="form-text">
+              What is your story about? 
+              Think elevator pitch or summary. 
+              (Try to avoid spoilers!)
+              Can be edited later.
+            </div>
+          </div>
+          <div class="text-center">
+            <input type="submit" id="story-submit" value="Submit!">
+          </div>
+        </form>
+      </div>
+    </div>
+
+
+
+  </div>
 </div>
-
-{% if session['intro_branch_id'] %}
-  <a href="/stories/{{ story.story_id }}/edit/branches/{{ story.first_branch_id }}"><button>Edit Branches</button></a>
-{% endif %}
-
-{% if not session['intro_branch_id'] %}
-<a href="/stories/{{ story.story_id }}/branches/new"><button>Create Intro Branch</button></a>
-{% endif %}
-
-<a href="/stories/{{ story.story_id }}/delete"><button>Delete Story</button></a>
 
 {% endblock %}

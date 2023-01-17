@@ -1,27 +1,21 @@
-function displayForm(formButtonId) {
-    if (formButtonId == 'create') {
-        document.querySelector('#create-account').style.display = ""
+function displayForm(formId) {
+    if (formId == 'create') {
+        document.querySelector('#create-account').style.display = "";
+        document.querySelector('#login-account').style.display = "none";
     }
     else {
-        document.querySelector('#login-account').style.display = ""
+        document.querySelector('#login-account').style.display = "";
+        document.querySelector('#create-account').style.display = "none";
     }
 }
 
-function turnOffAccountButtons() {
-    const accountButtons = document.querySelectorAll('.account-buttons');
-    for (const button of accountButtons) {
-        button.style.display = 'none'
-    }
-}
+const accountToggles = document.querySelectorAll('.account-toggle');
 
-const accountButtons = document.querySelectorAll('.account-buttons');
-
-for (const button of accountButtons) {
-    button.addEventListener('click', (evt) => {
+for (const toggle of accountToggles) {
+    toggle.addEventListener('click', (evt) => {
         evt.preventDefault();
-
-        turnOffAccountButtons();
-        displayForm(button.id)
+        
+        displayForm(toggle.id);
 
     });
 }

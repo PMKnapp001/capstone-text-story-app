@@ -1,11 +1,140 @@
 /* form {
     margin: auto;
-} */
+}
 
 body {
     display: flex;
     justify-content: center;
     align-items: center;
-    /* height: 500px; */
+    /* height: 500px; 
     flex-direction: column;
+} */
+
+.rating-form {
+    margin-left: 15px;
+    margin-right: 15px;
+    margin-bottom: 20px;
+}
+
+#top-nav-bar {
+    margin-bottom: 57px;
+    
+}
+
+.base-nav-top {
+    background: url("/static/images/vintage-2714966_1280.jpg") no-repeat center;
+    background-size: cover;
+}
+
+.first-container {
+    margin-top: 75px;
+    margin-bottom: 10px;
+}
+
+#title {
+    margin-top: 10px;
+}
+
+#author {
+    margin-bottom: 10px;
+}
+
+#title-card {
+    margin-bottom: 140px; 
+}
+
+#account-page {
+    background: url("/static/images/books-1163695_1280.jpg") no-repeat center center;
+    background-size: cover;
+}
+
+.vertical-end {
+    background: rgb(128, 0, 32) repeat center center;
+    background-size: repeat;
+}
+
+.background-layer {
+    background: rgb(78, 41, 12);
+}
+
+body {
+    font-family: "Cutive Mono", serif;
+    font-weight:  700;
+}
+
+.story-item-background {
+    background: url("/static/images/paper-background.png") repeat center center;
+    background-size: repeat;
+}
+
+.group-title-background {
+    background: url("/static/images/paper-1074131_1280.jpg") center center;
+    background-size: cover;
+}
+
+.username-background {
+    background: url("/static/images/paper-1074136_1280.jpg") repeat center center;
+    background-size: cover;
+}
+
+.profile-background {
+    background: url("/static/images/books-2463779_1280.jpg") repeat center center;
+    background-size: repeat;
+}
+
+.user-stories-background {
+    background: url("/static/images/books-1850645_1280.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    
+}
+
+.user-profile-container {
+    margin-top: 75px;
+}
+
+.writing-background {
+    background: url("/static/images/typewriter-1248088_1280.jpg") repeat center center;
+    background-size: cover;
+}
+
+.tree-background {
+    background: url("/static/images/tree-164915_1280.jpg") center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+.play-background {
+    background: url("/static/images/book-794978_1280.jpg") center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+
+}
+
+.play-story {
+    margin-left: 390px;
+    margin-bottom: 50px;
+}
+
+.first-line {
+    text-indent: 50px;
+}
+
+.search-container {
+    margin-top: 125px;
+    
+}
+
+.search-background {
+    background: url("/static/images/magnifying-glass-626174_1280.jpg") center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+#top-ten-popular {
+    margin-top: 125px;
 }

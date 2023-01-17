@@ -1,20 +1,33 @@
 {%- macro branch_form(body_label) -%}
-        <label for="body">{{ body_label }}: </label>
-        <textarea name="body" id="body"></textarea>
+    <div class="mb-3">
+        <label for="body" class="form-label">{{ body_label }}:</label>
+        <textarea name="body" id="body" class="form-control" rows="7" cols="150"></textarea>
+        <div class="form-text">
+            This is the body text for this branch to your story.
+            Can be edited later.
+        </div>
+    </div>
 
-        <label for="prompt">Enter the prompt for the next choice(if any): </label>
-        <textarea name="prompt" id="prompt" value=""></textarea>
+    <div class="mb-3">
+        <label for="prompt" class="form-label">Prompt for next branches:</label>
+        <textarea name="prompt" id="prompt" class="form-control" rows="3" cols="150"></textarea>
+        <div class="form-text">
+            The prompt set's up the upcoming choice for the reader.
+            Not required and can be edited later.
+        </div>
+    </div>
 {%- endmacro %}
 
 {%- macro show_branches(tree_branch) -%}
     <ul>
-       <li><a href="/stories/{{ session['story_id'] }}/branches/{{ tree_branch['branch_id'] }}/updateid">
-                ID: {{ tree_branch['branch_id'] }} Desc:{{ tree_branch['branch_desc'] }}
+        <li><a href="/stories/{{ session['story_id'] }}/edit/branches/{{ tree_branch['branch_id'] }}">
+                <button class="btn btn-secondary my-3 border-dark">ID: {{ tree_branch['branch_id'] }} {{ tree_branch['branch_desc'] }}</button>
             </a>
         {% for child in tree_branch['children'] %}
             {{ show_branches(child) }}
         {% endfor %}
        </li> 
-    </ul>   
+    </ul>  
+     
 {%- endmacro -%}
 

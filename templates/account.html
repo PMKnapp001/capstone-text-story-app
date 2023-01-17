@@ -2,39 +2,78 @@
 {% block title %}Story App Account Page{% endblock %}
 
 {% block body %}
-<div class="account-button-container">
-    <button class="account-buttons" id="create">Create an Account</button>
-<br>
-    <button class="account-buttons" id="login">Login to Account</button>
-</div>
+<div id="account-page" class="container-fluid " >
+    <div class="row py-5 vertical-end">
 
-<div id="create-account" class="account-div" style="display: none">
-    <h3>Create an Account</h3>
-    <form action="/users/new" method="POST">
-        <label for="username">Username: </label>
-        <input type="text" name="username" id="username">
-<br>
-        <label for="email">Email: </label>
-        <input type="text" name="email" id="email">
-<br>
-        <label for="password">Password: </label>
-        <input type="password" name="password" id="password">
-<br>      
-        <input type="submit" id="account-create" value="Create Account">
-    </form>
-</div>
+    </div>
 
-<div id="login-account" class="account-div" style="display: none">
-    <h3>Account Login</h3>
-    <form action="/users/login" method="POST">
-        <label for="username">Username: </label>
-        <input type="text" name="username" id="username">
-<br>
-        <label for="password">Password: </label>
-        <input type="password" name="password" id="password">
-<br>      
-        <input type="submit" id="account-login" value="Login">
-    </form>
+    <div class="row border-top border-bottom border-5">
+        <div class="col"></div>
+
+        <div class="col py-2">
+            <div id="account-form-box" class="col-8 offset-2 text-light pb-3 rounded-5 border text-dark border-dark border-5 story-item-background">
+                <div class="text-center px-2">
+                    <i class="bi bi-book-fill text-dark" style="margin-top: 100px; font-size: 6rem;"></i>
+                    <h2 class="text-decoration-underline">What hAPPens next?</h2>
+                </div>
+                
+                <div class="col-10 offset-1 ">
+                    <div id="create-account" class="account-div" style="display: none">
+                        <form action="/users/new" method="POST">
+                            <legend>Create Account</legend>
+                            <div class="form-floating">
+                                <input type="text" name="username" id="username" class="form-control">
+                                <label for="username" class="text-dark">Username: </label>
+                            </div>
+                            
+                            <div class="form-floating mt-1">
+                                <input type="text" name="email" id="email" class="form-control">
+                                <label for="email" class="text-dark">Email: </label>
+                            </div>
+                            
+                            <div class="form-floating mt-1">
+                                <input type="password" name="password" id="password" class="form-control">
+                                <label for="password" class="text-dark">Password: </label>
+                            </div>
+                        
+                            <div class="text-center mt-2">
+                                <input type="submit" id="account-create" value="Create Account">
+                            </div>
+                        </form>
+                        <a href="#" id="login" class="account-toggle text-dark">Already have an account? Login here!</a>
+                    </div>
+                
+                    <div id="login-account" class="account-div" style="display:">
+                        <form action="/users/login" method="POST">
+                            <legend>Login</legend>
+                            <div class="form-floating">
+                                <input type="text" name="username" id="username" class="form-control">
+                                <label for="username" class="text-dark">Username: </label>
+                            </div>
+                
+                            <div class="form-floating mt-1">
+                                <input type="password" name="password" id="password" class="form-control">
+                                <label for="password" class="text-dark">Password: </label>
+                            </div>
+                            <div class="text-center mt-2">
+                                <input type="submit" id="account-login" value="Login">
+                            </div>
+                        </form>
+                        <a href="#" id="create" class="account-toggle text-dark">Don't have an account? Create one here!</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col"></div>
+    </div>
+
+    <div class="row py-5 vertical-end">
+
+    </div>
 </div>
+    
+
+
 <script src="/static/js/account.js"></script>
 {% endblock %}

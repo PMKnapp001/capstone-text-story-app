@@ -260,9 +260,12 @@ def get_results():
 
     else:
         for i in range(len(results)):
+            rating = results[i].get_average_rating()
             results_dict[i] = {'title': results[i].title,
                                'story_id': results[i].story_id,
-                               'user_id': results[i].user_id}
+                               'user_id': results[i].user_id,
+                               'synopsis': results[i].synopsis,
+                               'rating': rating}
 
     results_json = jsonify(results_dict)
     
@@ -342,7 +345,7 @@ def add_rating(story_id):
     db.session.commit()
     flash(f"Rating for {story.title} successfully submitted.")
 
-    return redirect(f'/user/{user_id}/stories/{story.story_id}')
+    return redirect(f'/user/{story.user_id}/stories/{story.story_id}')
 
 
 @app.route('/stories/new', methods=["POST"])
@@ -374,7 +377,7 @@ def update_prev_branch_id(story_id, branch_id):
 
 @app.route('/stories/<story_id>/branches/new')
 def new_branch(story_id):
-    """Createstory route, gets branch info of previous branches 
+    """Create story route, gets branch info of previous branches 
     (if not creating intro branch)."""
 
     story = crud.get_story_by_id(story_id)
@@ -384,9 +387,14 @@ def new_branch(story_id):
         ancestor = crud.get_branch_by_id(prev_branch.prev_branch_id)
         siblings = prev_branch.get_next_branches()
 
-    else:
+    else: 
         siblings = []
         ancestor = []
+
+        if story.first_branch_id:
+            intro_branch = crud.get_branch_by_id(story.first_branch_id)
+            session['previous_branch_id'] = intro_branch.branch_id
+            siblings = intro_branch.get_next_branches()
 
     return render_template('createstory.html', story=story, siblings=siblings, ancestor=ancestor)
 
@@ -429,6 +437,8 @@ def add_branch(story_id):
 
     else:
         prev_branch_id = session['previous_branch_id']
+        if not prev_branch_id:
+            prev_branch_id = story.first_branch_id
         story_id = story.story_id
         description = request.form.get('description')
         body = request.form.get('body')
@@ -526,6 +536,7 @@ def get_branch_to_edit(story_id, branch_id):
     story = crud.get_story_by_id(story_id)
     branch = crud.get_branch_by_id(branch_id)
     session['intro_branch_id'] = story.first_branch_id
+    session['previous_branch_id'] = story.first_branch_id
 
     if session['intro_branch_id']:
         children = branch.get_next_branches()
@@ -534,7 +545,7 @@ def get_branch_to_edit(story_id, branch_id):
         
         if story.first_branch_id != branch.branch_id:
             session['previous_branch_id'] = branch.prev_branch_id
-            prev_branch = crud.get_branch_by_id(session['previous_branch_id'])
+            prev_branch = crud.get_branch_by_id(branch.prev_branch_id)
             ancestor = crud.get_branch_by_id(prev_branch.prev_branch_id)
             siblings = prev_branch.get_next_branches()
             siblings.pop(siblings.index(branch))

@@ -2,66 +2,100 @@
 {% block title %}Story App User Profile{% endblock %}
 
 {% block body %}
-<h1>{{ user.username }}</h1>
-<h2>{{ user.email }}</h2>
+<div class="container-fluid background-layer">
+    <div class="row profile-background border-5 border-dark border-top border-bottom">
+        <div class="row first-container user-profile-container">
+            <div class="col-4 offset-4 gy-3 text-center border border-dark rounded username-background">
+                <h1>{{ user.username }}</h1>
+                <h2>{{ user.email }}</h2>
+            </div>
+        </div>
 
-{% if session['user_id'] == user.user_id %}
-    <div id="bookmarked-stories">
-        <h3>Pickup Where You Left Off</h3>
-        {% for bookmarked_story in user.bookmarks %}
-            {% if not bookmarked_story.is_fin %}
-            <li>
-                <a href="/user/{{ bookmarked_story.story.user_id }}/stories/{{ bookmarked_story.story_id }}">
-                    {{ bookmarked_story.story.title }}
-                </a>
-            </li>
-            {%  endif %}
-        {% endfor %}
+        <div class="row">
+            {% if session['user_id'] == user.user_id %}
+                <div class="list-group col-4 gy-5 text-center">
+                    <div id="bookmarked-stories">
+                        <h3 class="list-group-item rounded border-dark group-title-background">
+                            <i class="bi bi-bookmark-fill"></i>
+                            Bookmarked Stories</h3>
+                        {% for bookmarked_story in user.bookmarks if not bookmarked_story.is_fin %}
+                            <ul id="{{ bookmarked_story.story.story_id }}" class="list-group list-group-horizontal mb-3 text-center">
+                                <a class="list-group-item flex-fill border-dark story-item-background"> 
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h4 class="mb-1 text-decoration-underline">{{ bookmarked_story.story.title }}</h5>
+                                    </div>
+                                    <p class="mb-1">{{ bookmarked_story.story.synopsis }}</p>
+                                    <small class="text-muted">Average Rating = {{ bookmarked_story.story.get_average_rating() }}</small>                              
+                                </a>
+                                <a href="/user/{{ bookmarked_story.story.user_id }}/stories/{{ bookmarked_story.story_id }}" class="border-dark list-group-item text-bg-primary pt-4">
+                                    <div>
+                                        <i class="bi bi-book-fill" style="font-size: 2rem;"></i>
+                                    </div>
+                                    Play
+                                </a>
+                            </ul>
+                            {% else %}
+                                <P>No bookmarks found! </P>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="list-group col-4 gy-5 text-center">
+                    <div id="playthroughs">
+                        <h3 class="list-group-item rounded border-dark group-title-background">
+                            <i class="bi bi-bookmark-check-fill"></i>
+                            Completed Playthroughs</h3>
+                        {% for bookmarked_story in user.bookmarks if bookmarked_story.is_fin %}
+                            <ul id="{{ bookmarked_story.story.story_id }}" class="list-group border-dark list-group-horizontal mb-3 text-center">
+                                <a class="list-group-item story-item-background flex-fill border-dark"> 
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h4 class="mb-1 text-decoration-underline">{{ bookmarked_story.story.title }}</h5>
+                                    </div>
+                                    <p class="mb-1">{{ bookmarked_story.story.synopsis }}</p>
+                                    <small class="text-muted">Average Rating = {{ bookmarked_story.story.get_average_rating() }}</small>                              
+                                </a>
+                                <a href="/user/{{ bookmarked_story.story.user_id }}/stories/{{ bookmarked_story.story_id }}" class="border-dark list-group-item text-bg-primary pt-4">
+                                    <div>
+                                        <i class="bi bi-book-fill" style="font-size: 2rem;"></i>
+                                    </div>
+                                    Play
+                                </a>
+                            </ul>
+                            {% else %}
+                            <p>You havent finished playing any stories!</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="list-group col-4 gy-5 text-center">
+                <div id="user-favorites">
+                    <h3 class="list-group-item rounded border-dark group-title-background">
+                        <i class="bi bi-bookmark-heart-fill"></i>
+                        Favorite Stories</h3>
+                    {% for favorite in user.favorites if favorite %}
+                        <ul id="{{ favorite.story.story_id }}" class="list-group list-group-horizontal mb-3 text-center border-dark">
+                            <a class="list-group-item story-item-background flex-fill border-dark"> 
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h4 class="mb-1 text-decoration-underline">{{ favorite.story.title }}</h5>
+                                </div>
+                                <p class="mb-1">{{ favorite.story.synopsis }}</p>
+                                <small class="text-muted">Average Rating = {{ favorite.story.get_average_rating() }}</small>                              
+                            </a>
+                            <a href="/user/{{ favorite.story.user_id }}/stories/{{ favorite.story_id }}" class="border-dark list-group-item text-bg-primary pt-4">
+                                <div>
+                                    <i class="bi bi-book-fill" style="font-size: 2rem;"></i>
+                                </div>
+                                Play
+                            </a>
+                        </ul>
+                        {% else %}
+                        <p>You don't have any favorite stories yet!</p>
+                    {% endfor %}
+                </div>
+            </div>                
+        </div>  
     </div>
-
-    <div id="playthroughs">
-        <h3>Completed Playthroughs</h3>
-        {% for bookmarked_story in user.bookmarks %}
-            {% if bookmarked_story.is_fin %}
-            <li>
-                <a href="/user/{{ bookmarked_story.story.user_id }}/stories/{{ bookmarked_story.story_id }}">
-                    {{ bookmarked_story.story.title }}
-                </a>
-            </li>
-            {%  endif %}
-        {% endfor %}
-    </div>
-{% endif %}
-
-<div id="user-favorites">
-    <h3>
-        Favorite Stories
-    </h3>
-
-    {% for favorite in user.favorites %}
-        <li>
-            <a href="/user/{{ favorite.story.user_id }}/stories/{{ favorite.story_id }}">
-                {{ favorite.story.title }} || {{ user.username }}'s Score: {{ favorite.get_rating_score() }} || Average Score = {{ favorite.story.get_average_rating() }}
-            </a>
-        </li>
-    {% endfor %}
 </div>
-
-<div id="user-stories">
-    <h3>
-        Stories
-    </h3>
-
-    {% for story in user.stories %}
-    <li>
-        <a href="/user/{{ user.user_id }}/stories/{{ story.story_id }}">
-            <button id="{{ story.story_id }}">
-                {{ story.title }}
-            </button>
-        </a>
-        <div>Rating: {{ story.get_average_rating() }}</div>
-    </li>
-    {% endfor %}
-</div>
-
 {% endblock %}
+

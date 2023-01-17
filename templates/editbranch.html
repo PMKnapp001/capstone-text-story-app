@@ -2,85 +2,186 @@
 {% block title %}Story App Edit Branch{% endblock %}
 
 {% block body %}
-
-  <h1 id="edit-id">Story ID: {{ story.story_id }}</h1>
-  <h1 id="title">Title: {{ story.title }}</h1>
-  <div id="synopsis">Synopsis: {{ story.synopsis }}</div>
-  <h3>
-    <a href="/stories/{{ story.story_id }}/edit/branches/{{ session['intro_branch_id'] }}">
-      <button>Intro branch ID: {{ session['intro_branch_id'] }}</button>
-    </a>
-  </h3>
-
-  {% if session['previous_branch_id'] %}
-    {% if ancestor %}
-      <h3>
-        <a href="/stories/{{ story.story_id }}/edit/branches/{{ ancestor.branch_id }}">
-          <button>Ancestor branch ID: {{ ancestor.branch_id }}</button>
-        </a>
-      </h3>
-    {% endif %}
-
-    <h3>
-      <a href="/stories/{{ story.story_id }}/edit/branches/{{ session['previous_branch_id'] }}">
-          <button>Previous Branch ID: {{ session['previous_branch_id'] }}</button>
-      </a>
-    </h3>
-  {% endif %}
-
-  <div id="intro-form">
-    <form action="" method="POST">
-    {% if not session['previous_branch_id'] %}
-        <label for="body">Intro: </label>
-        <textarea name="body" id="body">{{ branch.body }}</textarea>
-
-        <label for="prompt">Enter the prompt for the next choice(if any): </label>
-        <textarea name="prompt" id="prompt">{{ branch.branch_prompt }}</textarea>
-
-        <input type="submit" id="branch-submit" value="Submit Branch">
-    </form>
-    {% endif %}
-    {% if session['previous_branch_id'] %}
-        <label for="description">Enter a brief description of your branch(one sentence): </label>
-        <textarea name="description" id="description">{{ branch.description }}</textarea>
-        
-        <label for="body">Branch Body: </label>
-        <textarea name="body" id="body">{{ branch.body }}</textarea>
-
-        <label for="prompt">Enter the prompt for the next choice(if any): </label>
-        <textarea name="prompt" id="prompt" value="">{{ branch.branch_prompt }}</textarea>
-
-        <input type="submit" id="branch-submit" value="Submit Branch">
-    </form>
-    {% endif %}
+<div class="container-fluid row first-container writing-background border-dark border-top border-bottom border-5">
+  <div id="title-card" class="row" >
+    <div class="col-6 offset-3 gy-3 text-center position-fixed border rounded border-dark group-title-background">
+      <h1 id="title" class="text-decoration-underline">{{ story.title }}</h1>
+      <h3 id="synopsis">{{ story.synopsis }}</h3>
+    </div>
   </div>
 
-{% if siblings %}
-  <div>
-    Sibling Branches:
-    {% for sibling in siblings %}
-      <a href="/stories/{{ story.story_id }}/edit/branches/{{ sibling.branch_id }}">
-        <button id="sibling-{{ sibling.branch_id }}">{{ sibling.branch_id }}: {{ sibling.description }}</button>
-      </a>
-    {% endfor %}
-  </div>
-{% endif %}
+  <div class="row">
+    <div class="col-4 position-fixed">
+      <div class="row">
+        <div class="dropdown-center col-4 offset-4 gy-3 text-center">
+          <button class="btn btn-secondary dropdown-toggle border-dark" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Story Options
+          </button>
+          <ul class="dropdown-menu">
+            <a class="dropdown-item" href="/user/{{ story.user_id }}/stories/{{ story.story_id }}">
+              Play
+            </a>
+            <a class="dropdown-item" href="/stories/{{ story.story_id }}/edit">
+              Edit Story
+            </a>
+            {% if session['intro_branch_id'] %}
+              <a class="dropdown-item" href="/stories/{{ story.story_id }}/branches">
+                Edit Branches
+              </a>
+            {% endif %} 
+            <a class="dropdown-item" href="/stories/{{ story.story_id }}/delete">
+              Delete Story
+            </a>
+          </ul>
+        </div>
+      </div>
 
-{% if children %}
-  <div>
-    Children Branches:
-    {% for child in children %}
-      <a href="/stories/{{ story.story_id }}/edit/branches/{{ child.branch_id }}">
-        <button id="child-{{ child.branch_id }}">{{ child.branch_id }}: {{ child.description }}</button>
-      </a>
-    {% endfor %}
-  </div>
-{% endif %}
+      <div class="row">
+        <div class="dropdown-center col-4 offset-4 gy-3 text-center">
+          <button class="btn btn-secondary dropdown-toggle border-dark" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Branch Options
+          </button>
+          <ul class="dropdown-menu">
+            <a class="dropdown-item" href="/stories/{{ story.story_id }}/branches/{{ branch.branch_id }}/updateid">
+              New Child Branch
+            </a>
+            <a class="dropdown-item" href="/stories/{{ story.story_id }}/branches/new">
+              New Sibling Branch
+            </a>
+            <a class="dropdown-item" href="/stories/{{ story.story_id }}/delete/branches/{{ branch.branch_id }}">
+              Delete Branch
+            </a>
+          </ul>
+        </div>
+      </div>
+    </div>
 
-<a href="/stories/{{ story.story_id }}/branches">
-  <button id="branch-overview">View Branches</button>
-</a>
-<a href="/stories/{{ story.story_id }}/delete/branches/{{ branch.branch_id }}">
-  <button>Delete Branch</button>
-</a>
+    <div class="col-4 offset-4 border mb-5 py-2 border-dark story-item-background">
+      <div id="intro-form">
+        <form action="" method="POST">
+        {% if branch.branch_id == session['intro_branch_id'] %}
+          <div class="mb-3">
+            <label for="body" class="form-label">Intro: </label>
+            <textarea name="body" id="body" class="form-control" rows="7" cols="150">{{ branch.body }}</textarea>
+            <div class="form-text">
+              This is the body text for this branch to your story.
+              Can be edited later.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="prompt" class="form-label">Enter the prompt for the next choice(if any): </label>
+            <textarea name="prompt" id="prompt" class="form-control" rows="3" cols="150">{{ branch.branch_prompt }}</textarea>
+            <div class="form-text">
+              The prompt set's up the upcoming choice for the reader.
+              Not required and can be edited later.
+            </div>
+          </div>
+          
+          <div class="text-center gy-3">
+            <input type="submit" id="branch-submit" value="Submit Branch">
+          </div>
+        </form>
+        {% endif %}
+        {% if branch.branch_id != session['intro_branch_id'] %}
+          <div class="mb-3">
+            <label for="description" class="form-label">Enter a brief description of your branch(one sentence): </label>
+            <textarea name="description" id="description" class="form-control">{{ branch.description }}</textarea>
+            <div class="form-text">
+              Describe or summarize what is going on in this branch.
+              This will be displayed for this branch as its option description.
+              Can be edited later.
+            </div>
+          </div>
+
+          <div class="mb-3">  
+            <label for="body" class="form-label">Branch Body: </label>
+            <textarea name="body" id="body" class="form-control" rows="7" cols="150">{{ branch.body }}</textarea>
+            <div class="form-text">
+              This is the body text for this branch to your story.
+              Can be edited later.
+          </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="prompt" class="form-label">Enter the prompt for the next choice(if any): </label>
+            <textarea name="prompt" id="prompt" class="form-control" rows="3" cols="150" value="">{{ branch.branch_prompt }}</textarea>
+            <div class="form-text">
+              The prompt set's up the upcoming choice for the reader.
+              Not required and can be edited later.
+          </div>
+          </div>
+
+          <div class="text-center gy-3">
+            <input type="submit" id="branch-submit" value="Submit Branch">
+          </div>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="col-4 offset-8 position-fixed">
+      {% if session['intro_branch_id'] %}
+        {% if session['intro_branch_id'] != branch.branch_id %}
+          <div class="row">
+            <div class="dropdown-center col-4 offset-4 gy-3 text-center">
+              <button class="btn btn-secondary dropdown-toggle border-dark" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Prior Branches
+              </button>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="/stories/{{ story.story_id }}/edit/branches/{{ session['intro_branch_id'] }}">
+                  Intro branch ID: {{ session['intro_branch_id'] }}
+                </a></li>
+
+                {% if ancestor %}
+                  <li><a class="dropdown-item" href="/stories/{{ story.story_id }}/edit/branches/{{ ancestor.branch_id }}">
+                    Ancestor branch ID: {{ ancestor.branch_id }}
+                  </a></li>
+                {% endif %}
+
+                <li><a class="dropdown-item" href="/stories/{{ story.story_id }}/edit/branches/{{ session['previous_branch_id'] }}">
+                  Previous Branch ID: {{ session['previous_branch_id'] }}
+                </a></li>
+              </ul>
+            </div>
+          </div>
+        {% endif %}
+      {% endif %}
+    
+      {% if siblings %}
+        <div class="row">          
+          <div class="dropdown col-4 offset-4 gy-3 text-center">
+            <button class="btn btn-secondary dropdown-toggle border-dark" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Sibling Branches
+            </button>
+            <ul class="dropdown-menu">
+              {% for sibling in siblings %}
+                <li><a id="sibling-{{ sibling.branch_id }}" class="dropdown-item" href="/stories/{{ story.story_id }}/edit/branches/{{ sibling.branch_id }}">
+                  {{ sibling.branch_id }}: {{ sibling.description }}
+                </a></li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      {% endif %}
+
+      {% if children %}
+        <div class="row">
+          <div class="dropdown col-4 offset-4 gy-3 text-center">
+            <button class="btn btn-secondary dropdown-toggle border-dark" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Children Branches
+            </button>
+            <ul class="dropdown-menu">
+              {% for child in children %}
+                <li><a id="child-{{ child.branch_id }}"" class="dropdown-item" href="/stories/{{ story.story_id }}/edit/branches/{{ child.branch_id }}">
+                  {{ child.branch_id }}: {{ child.description }}
+                </a></li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
 {% endblock %}

@@ -61,20 +61,21 @@ def create_branch(story_id, prev_branch_id, description, body, branch_prompt, or
 def delete_branch_and_descendants(branch_id):
     """Deletes branch after deleting children branches."""
 
-    branch = Branch.query.get(branch_id)
-    story = branch.story
-    if story.first_branch_id == int(branch_id):
-        story.first_branch_id == None
-        db.session.add(story)
-        db.session.commit()
+    if branch_id:
+        branch = Branch.query.get(branch_id)
+        story = branch.story
+        if story.first_branch_id == int(branch_id):
+            story.first_branch_id = None
+            db.session.add(story)
+            db.session.commit()
 
-    for child in branch.get_next_branches():
-        delete_bookmarks_for_branch(child.branch_id)
-        delete_branch_and_descendants(child.branch_id)
-        db.session.delete(child)
+        for child in branch.get_next_branches():
+            delete_bookmarks_for_branch(child.branch_id)
+            delete_branch_and_descendants(child.branch_id)
+            db.session.delete(child)
+            db.session.commit()
+        db.session.delete(branch)
         db.session.commit()
-    db.session.delete(branch)
-    db.session.commit()
 
 
 def create_rating(score, user_id, story_id):
@@ -350,7 +351,7 @@ def get_rating(user_id, story_id):
 
 def get_ordinal_for_next_branch(branch_id = 0):
     """Returns an ordinal value to be used when creating a branch."""
-
+    
     all_sub_branches = Branch.query.filter(Branch.prev_branch_id == branch_id).all()
     ordinal = 1
 

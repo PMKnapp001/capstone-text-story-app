@@ -2,16 +2,48 @@
 {% block title %}Story App Create Story{% endblock %}
 
 {% block body %}
-    <div id="top-ten-popular">
-        <h3>Top Ten Popular Stories</h3>
-        <ol>
-            {% for story in stories %}
-            <li>
-                <a href="/user/{{ story[0].user_id }}/stories/{{ story[0].story_id }}">
-                    {{ story[0].title }} || Total Ratings: {{ story[1] }} || Average Rating: {{ story[2] }}
-                </a>
-            </li>
-            {% endfor %}
-        </ol>
+    <div id="top-ten-popular" class="first-container">
+        <div class="row ">
+            <div class="col text-center">
+                
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-6 offset-3">
+                <ul class="list-group border-5 border-dark story-item-background">
+                    <li class="list-group-item border-dark border-5 text-center group-title-background">
+                        <h3>Top Ten Popular Stories</h3>
+                    </li>
+                    <li class="list-group-item border-dark border-5 group-title-background">
+                        <ol class="list-group list-group-numbered list-group-flush">
+                            {% for story in stories %}
+                            <li class="list-group-item border-dark border-5 bg-transparent">
+                                <ul id="{{ story[0].story_id }}" class="list-group border-dark list-group-horizontal mb-3 text-center">
+                                    <a class="list-group-item story-item-background border-dark flex-fill"> 
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h4 class="mb-1 text-decoration-underline">{{ story[0].title }}</h5>
+                                        </div>
+                                        <p class="mb-1">{{ story[0].synopsis }}</p>
+                                        <small class="text-muted">Total Ratings: {{ story[1] }}</small> 
+                                        <small class="text-muted">Average Rating: {{ story[2] }}</small>                              
+                                    </a>
+                                    <a href="/user/{{ story[0].user_id }}/stories/{{ story[0].story_id }}" class="border-dark list-group-item text-bg-primary pt-3">
+                                        <div>
+                                            <i class="bi bi-book-fill" style="font-size: 2rem;"></i>
+                                        </div>
+                                        Play
+                                    </a>
+                                </ul>
+                            </li>
+                            {% endfor %}
+                        </ol>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
+    
+    
+
 {% endblock %}

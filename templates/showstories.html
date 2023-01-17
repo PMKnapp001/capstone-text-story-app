@@ -2,16 +2,45 @@
 {% block title %}Story App View Stories{% endblock %}
 
 {% block body %}
-    <h2>{{ user.username }}'s Stories</h2>
-    {% for story in stories %}
-    <li>
-        <a href="/user/{{ user.user_id }}/stories/{{ story.story_id }}">
-            <button id="{{ story.story_id }}">
-                {{ story.title }}
-            </button>
-        </a>
-        <div>Rating: {{ story.get_average_rating() }}</div>
-    </li>
-    {% endfor %}
+<div class="container-fluid user-stories-background">
+    <div class="row first-container user-stories-background border-dark border-5 border-top border-bottom" style="padding-bottom: 350px;">
+        <div class="col-6 offset-3 text-center">
+            <div class="row py-5">
+                <div class="list-group border-5">
+                    <div class="list-group-item rounded text-center border-dark group-title-background mb-3">
+                        <h3>{{ user.username }}'s Stories</h3>
+                    </div>
+                
+                    <div class="list-group">
+                        {% for story in stories %}
+                            <ul id="{{ story.story_id }}" class="list-group border-dark list-group-horizontal mb-3 text-center">
+                                <a class="list-group-item story-item-background border-dark flex-fill"> 
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h4 class="mb-1 text-decoration-underline">{{ story.title }}</h5>
+                                    </div>
+                                    <p class="mb-1">{{story.synopsis}}</p>
+                                    <small class="text-muted">Average Rating: {{ story.get_average_rating() }}</small>                              
+                                </a>
+                                <a href="/user/{{ user.user_id }}/stories/{{ story.story_id }}" class="border-dark list-group-item text-bg-primary pt-3">
+                                    <div>
+                                        <i class="bi bi-book-fill" style="font-size: 2rem;"></i>
+                                    </div>
+                                    Play
+                                </a>
+                                <a href="/stories/{{ story.story_id }}/edit" class="border-dark list-group-item text-bg-primary pt-3">
+                                    <div>
+                                        <i class="bi bi-book-half" style="font-size: 2rem;"></i>
+                                    </div>
+                                    Edit
+                                </a>
+                            </ul>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+        
 
 {% endblock %}

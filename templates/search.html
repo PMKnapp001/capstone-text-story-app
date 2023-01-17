@@ -2,19 +2,41 @@
 {% block title %}Story App Search{% endblock %}
 
 {% block body %}
-    <h2>Search</h2>
+<div class="container-fluid search-background border-dark border-top border-bottom border-5 pb-5">
+    <div class="row first-container search-container">
+        <div id="search-form" class="col-4 offset-4 border border-5 border-dark py-2 mb-5 story-item-background">
+            <h2>Search</h2>
+            <div class="mb-3">
+                <label for="search-for" class="form-label">Search for User or Story:</label>
+                <div class="input-group mb-4">
+                    <div class="input-group-text">
+                      <input name="search-for" id="user-radio" class="form-check-input mt-0" type="radio" value="user">
+                    </div>
+                    <label for="user-radio" class="form-control">User</label>
+                </div>
 
-    <label for="search-for">Search for User or Story</label>
-    <input type="radio" name="search-for" id="user-radio" value="user">
-    <label for="user-radio">User</label>
-    <input type="radio" name="search-for" id="story-radio" value="story">
-    <label for="story-radio">Story</label>
-
-    <label for="search-text"></label>
-    <input type="text" id="search-text" name="search-text" required="required" minlength="1">
-    <button id="search-submit">Search!</button>
-
-    <div id="results-container">
+                <div class="input-group mb-4">
+                    <div class="input-group-text">
+                      <input name="search-for" id="story-radio" class="form-check-input mt-0" type="radio" value="story">
+                    </div>
+                    <label for="story-radio" class="form-control">Story</label>
+                </div>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="text" name="search-text" class="form-control" id="search-text" required="required" placeholder="Username or Story Title" minlength="1">
+                <label for="search-text">Enter Username or Story Title</label>
+            </div>
+            <div class="text-center">
+                <button id="search-submit" class="btn btn-secondary">Search!</button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4 offset-4 py-2">
+            <ul id="results-container" class="list-group list-group-item list-group border-dark group-title-background" style="display:none">
+            </ul>    
+        </div>
     </div>
     <script src="/static/js/search.js"></script>
+</div>
 {% endblock %}

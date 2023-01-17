@@ -2,85 +2,160 @@
 {% block title %}Story App Create Story{% endblock %}
 
 {% block body %}
-<a href="/user/{{ session['user_id'] }}/stories"><button>Go To Stories</button></a>
-{% if not session['story_id'] %}
-<div id="story-form">
-  <form action="/stories/new" method="POST">
-    <label for="title">Story Title:</label>
-    <input type="text" name="title" id="title">
+<div class="container-fluid">
+  {% if not session['story_id'] %}
+    <div class="row first-container writing-background border-top border-dark border-bottom border-5">
+      <div class="col-4 offset-4 border border-dark border-5 py-2 story-item-background my-5">
+        <div id="story-form">
+          <form action="/stories/new" method="POST">
+            <div class="mb-3">
+              <label for="title" class="form-label">Story Title:</label>
+              <input type="text" name="title" id="title" class="form-control">
+              <div class="form-text">
+                Enter the title of your story. Can be edited later.
+              </div>
+            </div>
 
-    <label for="synopsis">Story Synopsis:</label>
-    <textarea name="synopsis" id="synopsis"></textarea>
+            <div class="mb-5">
+              <label for="synopsis" class="form-label">Story Synopsis:</label>
+              <textarea name="synopsis" id="synopsis" class="form-control" rows="5" cols="40"></textarea>
+              <div class="form-text">
+                What is your story about? 
+                Think elevator pitch or summary. 
+                (Try to avoid spoilers!)
+                Can be edited later.
+              </div>
+            </div>
 
-    <input type="submit" id="story-submit" value="Submit!">
-  </form>
-</div>
-{% endif %}
-
-{% if session['story_id'] %}
-  <h1 id="debug-id">Story ID: {{ story.story_id }}</h1>
-  <h1 id="title">Title: {{ story.title }}</h1>
-  <div id="synopsis">Synopsis: {{ story.synopsis }}</div>
-  
-  {% if session['intro_branch_id'] %}
-    <h3>
-      <a href="/stories/{{ story.story_id }}/branches/{{ session['intro_branch_id'] }}/updateid">
-        <button>Intro branch ID: {{ session['intro_branch_id'] }}</button>
-      </a>
-    </h3>
-
-    {% if ancestor %}
-      <h3>
-        <a href="/stories/{{ story.story_id }}/branches/{{ ancestor.branch_id }}/updateid">
-          <button>Ancestor branch ID: {{ ancestor.branch_id }}</button>
-        </a>
-      </h3>
-    {% endif %}
-
-    <h3>Previous Branch ID: {{ session['previous_branch_id'] }}</h3>
+            <div class="text-center">
+              <input type="submit" id="story-submit" value="Submit!">
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
   {% endif %}
 
-  <div id="intro-form">
-    <form action="/stories/{{ story.story_id }}/branches/new" method="POST">
-    {% if not session['intro_branch_id'] %}
-      {{ jin_macs.branch_form("Intro Branch") }}
-      <input type="submit" id="branch-submit" value="Submit Branch">
-    </form>
-    {% endif %}
-    {% if session['intro_branch_id'] %}
-      <label for="description">Enter a brief description of your branch(one sentence): </label>
-      <textarea name="description" id="description"></textarea>
-      {{ jin_macs.branch_form("Branch Body") }}
-      <label for="next">Will the next branch continue this path or add another path?</label>
+  {% if session['story_id'] %}
+    <div class="row first-container writing-background border-dark border-top border-bottom border-5">
+      <div id="title-card" class="row" >
+        <div class="col-6 offset-3 gy-3 text-center position-fixed border border-dark rounded group-title-background">
+          <h1 id="title" class="text-decoration-underline">{{ story.title }}</h1>
+          <h3 id="synopsis">{{ story.synopsis }}</h3>
+        </div>
+      </div>
 
-        <input type="radio" name="next" value="child" id="submit-child">
-        <label for="submit-child">Continue Path</label>
-
-        <input type="radio" name="next" value="sibling" id="submit-sibling">
-        <label for="submit-sibling">Add Path</label>
+      <div class="row">
+        <div class="col-4 position-fixed ">
+          <div class="dropdown-center col-4 offset-4 gy-3 text-center">
+            <button class="btn btn-secondary border-dark dropdown-toggle my-5" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Story Options
+            </button>
+            <ul class="dropdown-menu">
+              <a class="dropdown-item" href="/stories/{{ story.story_id }}/edit">
+                Edit Story
+              </a>
+              {% if session['intro_branch_id'] %}
+                <a class="dropdown-item" href="/stories/{{ story.story_id }}/branches">
+                  Edit Branches
+                </a>
+              {% endif %} 
+              <a class="dropdown-item" href="/stories/{{ story.story_id }}/delete">
+                Delete Story
+              </a>
+            </ul>
+          </div>
+        </div>
         
-      <input type="submit" id="branch-submit" value="Submit Branch">
-    </form>
+        <div class="col-4 offset-4 border border-dark mb-5 py-2 story-item-background">
+          <div id="branch-form">
+            <form action="/stories/{{ story.story_id }}/branches/new" method="POST">
+            {% if not session['intro_branch_id'] %}
+              {{ jin_macs.branch_form("Intro Branch") }}
+              <div class="text-center gy-3">
+                <input type="submit" id="branch-submit" value="Submit Branch">
+              </div>
+            </form>
+            {% endif %}
+            {% if session['intro_branch_id'] %}
+              <div class="mb-3">
+                <label for="description" class="form-label">Branch description(one sentence): </label>
+                <textarea name="description" id="description" class="form-control"></textarea>
+                <div class="form-text">
+                  Describe or summarize what is going on in this branch.
+                  This will be displayed for this branch as its option description.
+                  Can be edited later.
+                </div>
+              </div>
+              
+              {{ jin_macs.branch_form("Branch Body") }}
+              <label for="next" class="form-label">Will the next branch continue this path or add another path?</label>
+              <div class="input-group">
+                <div class="input-group-text">
+                  <input name="next" id="submit-child" class="form-check-input mt-0" type="radio" value="child" checked="checked">
+                </div>
+                <label for="submit-child" class="form-control">Continue Path</label>
+              </div>
+              
+              <div class="input-group mb-4">
+                <div class="input-group-text">
+                  <input name="next" id="submit-sibling" class="form-check-input mt-0" type="radio" value="sibling">
+                </div>
+                <label for="submit-sibling" class="form-control">Add Path</label>
+              </div>
+              
+              <div class="text-center">
+                <input type="submit" id="branch-submit" value="Submit Branch">
+              </div>
+            </form>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="col-4 offset-8 position-fixed">
+            {% if session['intro_branch_id'] %}
+                <div class="dropdown-center col-4 offset-4 gy-3 text-center">
+                  <button class="btn btn-secondary dropdown-toggle border-dark" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Prior Branches
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="/stories/{{ story.story_id }}/edit/branches/{{ session['intro_branch_id'] }}">
+                      Intro branch ID: {{ session['intro_branch_id'] }}
+                    </a></li>
+
+                    {% if ancestor %}
+                      <li><a class="dropdown-item" href="/stories/{{ story.story_id }}/edit/branches/{{ ancestor.branch_id }}">
+                        Ancestor branch ID: {{ ancestor.branch_id }}
+                      </a></li>
+                    {% endif %}
+                    <li><a class="dropdown-item" href="/stories/{{ story.story_id }}/edit/branches/{{ session['previous_branch_id'] }}">
+                      Previous Branch ID: {{ session['previous_branch_id'] }}
+                    </a></li>
+                  </ul>
+                </div>      
+            {% endif %}
+          
+            {% if siblings %}
+              <div class="row">          
+                <div class="dropdown col-4 offset-4 gy-3 text-center">
+                  <button class="btn btn-secondary dropdown-toggle border-dark" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Sibling Branches
+                  </button>
+                  <ul class="dropdown-menu">
+                    {% for sibling in siblings %}
+                      <li><a id="sibling-{{ sibling.branch_id }}" class="dropdown-item" href="/stories/{{ story.story_id }}/edit/branches/{{ sibling.branch_id }}">
+                        {{ sibling.branch_id }}: {{ sibling.description }}
+                      </a></li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              </div>
+            {% endif %}
+          
+        </div>
+
+      </div>  
+    </div>
     {% endif %}
-  </div>
-
-{% if siblings %}
-  <div>
-    Sibling Branches:
-    {% for sibling in siblings %}
-      <a href="/stories/{{ story.story_id }}/branches/{{ sibling.branch_id }}/updateid">
-        <button id="sibling-{{ sibling.branch_id }}">{{ sibling.branch_id }}: {{ sibling.description }}</button>
-      </a>
-    {% endfor %}
-  </div>
-{% endif %}
-
-{% if session['intro_branch_id'] %}
-  <a href="/stories/{{ story.story_id }}/branches">
-    <button id="branch-overview">View Branches</button>
-  </a>
-{% endif %}   
-
-{% endif %}
-
+</div>
 {% endblock %}
