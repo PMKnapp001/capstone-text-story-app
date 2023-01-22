@@ -93,9 +93,6 @@ by [Chooseco LLC.](https://www.cyoa.com/). However, the goal of my application i
         - One by testUser2 for story 3
         - One by TestUser3 for story 1
     - One bookmark by TestUser1 for story 5    
-    - Branch content is generated from markov chain generator (markov.py) 
-      using clever-grethel.txt, rabbits-bride.txt, and six-soldiers-of-fortune.txt
-      as input
 
 ### References
 
