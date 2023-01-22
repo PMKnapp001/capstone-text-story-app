@@ -93,6 +93,11 @@ class Story(db.Model):
         return self.get_intro_branch().make_story_tree()
 
 
+    def get_branches_by_ordinal(self):
+
+        return Branch.query.filter(Branch.story_id == self.story_id).order_by(Branch.ordinal).all()
+
+
 class Branch(db.Model):
     """Branch class."""
     

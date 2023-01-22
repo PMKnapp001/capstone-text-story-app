@@ -42,17 +42,19 @@
                 <div id="intro-branch" class="first-line">
                     {{ intro.body }}
                 </div>
-            
+                <br>
                 <div class="first-line">
                     {{ intro.branch_prompt }}
                 </div>
-            
+                
+                <br>
                 {% if bookmark %}
                     <button id="ghost-button-branch-id" value="{{ bookmark.branch_id }}" style="display: none"></button>
             
                     <div id="bookmark-div">
                         {% for page in bookmarked_story %}
-                            <div class="branch-body first-line">{{ page }}</div>   
+                            <div class="branch-body first-line">{{ page }}</div>  
+                            <br> 
                         {% endfor %}
                     </div>
                 {%  endif %}

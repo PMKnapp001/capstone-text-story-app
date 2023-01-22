@@ -51,20 +51,30 @@ test_synopsis = "This is the synopsis for a test story."
 test_title = "The Test"
 test_story1 = crud.create_story(test_user1.user_id, test_synopsis, test_title)
 model.db.session.add(test_story1)
-model.db.session.commit()
+
 
 test_synopsis = "This is the synopsis for the second test story."
 test_title = "The Test II: The Retake"
 test_story2 = crud.create_story(test_user2.user_id, test_synopsis, test_title)
 model.db.session.add(test_story2)
-model.db.session.commit()
+
 
 test_synopsis = "This is the synopsis for the third test story."
 test_title = "TT3: Pass/Fail"
 test_story3 = crud.create_story(test_user3.user_id, test_synopsis, test_title)
 model.db.session.add(test_story3)
-model.db.session.commit()
 
+test_synopsis = "This is the synopsis for the fourth test story."
+test_title = "Test IV: Extra Credit"
+test_story4 = crud.create_story(test_user2.user_id, test_synopsis, test_title)
+model.db.session.add(test_story4)
+
+
+test_synopsis = "This is the synopsis for the fifth test story."
+test_title = "Test: The Reboot"
+test_story5 = crud.create_story(test_user3.user_id, test_synopsis, test_title)
+model.db.session.add(test_story5)
+model.db.session.commit()
 
 
 # test intro branch record for test story
@@ -123,6 +133,41 @@ test_intro_branch3 = crud.create_branch(story_id=test_story3.story_id,
 model.db.session.add(test_intro_branch3)
 model.db.session.commit()
 
+new_rabbit = markov.make_new_story("rabbits-bride.txt")
+
+test_intro_body4 = new_rabbit
+test_intro_desc4 = "Intro Branch"
+test_branch_prompt4 = "(4)Choose the next branch: "
+ordinal4 = crud.get_ordinal_for_next_branch()
+
+test_intro_branch4 = crud.create_branch(story_id=test_story4.story_id, 
+                                    prev_branch_id = None, 
+                                    description=test_intro_desc4, 
+                                    body=test_intro_body4,
+                                    branch_prompt=test_branch_prompt4,
+                                    ordinal=ordinal4)
+
+model.db.session.add(test_intro_branch4)
+model.db.session.commit()
+
+
+new_soldiers = markov.make_new_story("six-soldiers-of-fortune.txt")
+
+test_intro_body5 = new_soldiers
+test_intro_desc5 = "Intro Branch"
+test_branch_prompt5 = "(5)Choose the next branch: "
+ordinal5 = crud.get_ordinal_for_next_branch()
+
+test_intro_branch5 = crud.create_branch(story_id=test_story5.story_id, 
+                                    prev_branch_id = None, 
+                                    description=test_intro_desc5, 
+                                    body=test_intro_body5,
+                                    branch_prompt=test_branch_prompt5,
+                                    ordinal=ordinal5)
+
+model.db.session.add(test_intro_branch5)
+model.db.session.commit()
+
 
 #Updating first_branch_id in test_story
 test_story1.first_branch_id = test_intro_branch1.branch_id
@@ -166,13 +211,46 @@ for branch in a_branches:
     create_branches(test_story3, branch, "b", "rabbits-bride.txt")
 
 
+test_story4.first_branch_id = test_intro_branch4.branch_id
+
+model.db.session.add(test_story4)
+model.db.session.commit()
+
+create_branches(test_story4, test_intro_branch4, "a", "rabbits-bride.txt")
+
+a_branches = model.Branch.query.filter(model.Branch.prev_branch_id == test_intro_branch4.branch_id).order_by(model.Branch.ordinal).all()
+
+for branch in a_branches:
+    create_branches(test_story4, branch, "b", "rabbits-bride.txt")
+
+
+test_story5.first_branch_id = test_intro_branch5.branch_id
+
+model.db.session.add(test_story5)
+model.db.session.commit()
+
+create_branches(test_story5, test_intro_branch5, "a", "six-soldiers-of-fortune.txt")
+
+a_branches = model.Branch.query.filter(model.Branch.prev_branch_id == test_intro_branch5.branch_id).order_by(model.Branch.ordinal).all()
+
+for branch in a_branches:
+    create_branches(test_story5, branch, "b", "six-soldiers-of-fortune.txt")
+
+
+
 score = randint(1,5)
 rating1 = crud.create_rating(score, 1, test_story2.story_id)
 score = randint(1,5)
 rating2 = crud.create_rating(score, 1, test_story3.story_id)
+score = randint(1,5)
+rating3 = crud.create_rating(score, 1, test_story4.story_id)
+score = randint(1,5)
+rating4 = crud.create_rating(score, 1, test_story5.story_id)
 
 model.db.session.add(rating1)
 model.db.session.add(rating2)
+model.db.session.add(rating3)
+model.db.session.add(rating4)
 
 model.db.session.commit()
 
@@ -196,4 +274,22 @@ model.db.session.add(favorite2)
 model.db.session.add(favorite3)
 model.db.session.add(favorite4)
 
+model.db.session.commit()
+
+intro_branch = model.Branch.query.filter(model.Branch.branch_id == 4).first()
+intro_branch.branch_prompt = "I apologize if the demo story text does not make sense. I generated it using:"
+
+first_option = model.Branch.query.filter(model.Branch.branch_id == 24).first()
+first_option.description = "a Markov text chain generator and"
+
+second_option = model.Branch.query.filter(model.Branch.branch_id == 25).first()
+second_option.description = "excerpts from The Project Gutenberg EBook of Household Stories by the Brothers Grimm."
+
+model.db.session.add(intro_branch)
+model.db.session.add(first_option)
+model.db.session.add(second_option)
+model.db.session.commit()
+
+demo_bookmark = crud.create_bookmark(1, 5, 33, True)
+model.db.session.add(demo_bookmark)
 model.db.session.commit()

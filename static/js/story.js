@@ -30,9 +30,9 @@ for (const button of choiceButtons) {
                 
 
                 buttonContainer.insertAdjacentHTML('beforebegin',
-                    `<div class="branch-body first-line">${responseData['body']}</div>`);
+                    `<div class="branch-body first-line">${responseData['body']}</div><br>`);
                 buttonContainer.insertAdjacentHTML('beforebegin',
-                    `<div class="branch-prompt first-line">${responseData['branch_prompt']}</div>`);
+                    `<div class="branch-prompt first-line">${responseData['branch_prompt']}</div><br>`);
                 
             });
     });

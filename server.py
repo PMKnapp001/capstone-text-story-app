@@ -167,7 +167,7 @@ def view_story(user_id, story_id):
     else:
         intro = ""
 
-    all_branches = story.branches
+    all_branches = story.get_branches_by_ordinal()
     favorite = crud.get_favorite(user_id = session['user_id'], story_id = story_id)
     rating = crud.get_rating(user_id = session['user_id'], story_id = story_id)
     bookmark = crud.get_bookmark_for_story(session['user_id'], story_id)
