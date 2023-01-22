@@ -73,7 +73,7 @@ by [Chooseco LLC.](https://www.cyoa.com/). However, the goal of my application i
 
 ## Demo Build
 
-Current database build (seed-story-app-database.py) builds tables and
+- Current database build (seed-story-app-database.py) builds tables and
   creates the following records/objects:
     - Three users (TestUser1, TestUser2, TestUser3) with respective 
       passwords (TestPass1, TestPass2, TestPass3)
